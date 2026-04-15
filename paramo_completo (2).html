@@ -1,0 +1,1901 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Páramo Presenta — Análisis de Audiencias</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════════════
+   VARIABLES GLOBALES
+═══════════════════════════════════════════════════ */
+:root{
+  --bg:#07070a; --s1:#0f0f14; --s2:#16161e; --border:#252530;
+  --accent:#c8f23b; --a2:#ff5a1f; --a3:#4af0ff; --a4:#c44af0; --a5:#f0c840;
+  --text:#f0ede8; --muted:#5a5a6e;
+  --hf:'Bebas Neue',sans-serif;
+  --bf:'Outfit',sans-serif;
+  --mf:'Space Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--bf);min-height:100vh;overflow-x:hidden;}
+
+/* ═══════════════════════════════════════════════════
+   PÁGINAS — sistema de navegación interna
+═══════════════════════════════════════════════════ */
+.page{display:none;min-height:100vh;}
+.page.active{display:block;}
+
+/* ═══════════════════════════════════════════════════
+   FONDO COMPARTIDO
+═══════════════════════════════════════════════════ */
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(200,242,59,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(200,242,59,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.bg-glow::before{content:'';position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:800px;height:600px;background:radial-gradient(ellipse,rgba(200,242,59,.07) 0%,transparent 70%);}
+.bg-glow::after{content:'';position:absolute;bottom:-10%;right:-10%;width:500px;height:500px;background:radial-gradient(ellipse,rgba(255,90,31,.05) 0%,transparent 70%);}
+
+/* ═══════════════════════════════════════════════════
+   PÁGINA 1 — LANDING
+═══════════════════════════════════════════════════ */
+#page-landing{position:relative;}
+.landing-wrap{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;}
+
+.landing-header{display:flex;align-items:center;justify-content:space-between;padding:22px 48px;border-bottom:1px solid var(--border);}
+.logo{font-family:var(--hf);font-size:1.5rem;letter-spacing:.1em;color:var(--accent);}
+.logo span{color:var(--text);opacity:.35;}
+.header-tag{font-family:var(--mf);font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);border:1px solid var(--border);padding:5px 12px;}
+
+.hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 40px 60px;}
+
+.hero-eyebrow{font-family:var(--mf);font-size:.6rem;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:28px;display:flex;align-items:center;gap:12px;animation:fadeUp .6s .1s both;}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';display:block;width:40px;height:1px;background:var(--accent);opacity:.4;}
+
+.hero-title{font-family:var(--hf);font-size:clamp(4rem,12vw,9rem);line-height:.88;letter-spacing:.04em;color:var(--text);margin-bottom:12px;animation:fadeUp .6s .2s both;}
+.hero-title em{color:var(--accent);font-style:normal;display:block;}
+
+.hero-sub{font-size:1rem;color:var(--muted);line-height:1.75;max-width:520px;margin:24px auto 52px;animation:fadeUp .6s .3s both;}
+.hero-sub strong{color:var(--text);font-weight:600;}
+
+.cta-group{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;max-width:380px;animation:fadeUp .6s .4s both;}
+
+.btn-primary{display:flex;align-items:center;justify-content:center;gap:14px;width:100%;padding:22px 40px;background:var(--accent);color:#000;font-family:var(--hf);font-size:1.6rem;letter-spacing:.1em;border:none;cursor:pointer;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.btn-primary::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.15);transform:translateX(-100%) skewX(-20deg);transition:transform .4s ease;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(200,242,59,.25);}
+.btn-primary:hover::before{transform:translateX(120%) skewX(-20deg);}
+.btn-primary:active{transform:translateY(0);}
+.btn-arrow{font-size:1.2rem;transition:transform .25s;}
+.btn-primary:hover .btn-arrow{transform:translateX(6px);}
+
+.info-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:4px;}
+.chip-small{font-family:var(--mf);font-size:.55rem;padding:5px 12px;border:1px solid var(--border);color:var(--muted);letter-spacing:.08em;}
+
+.divider{display:flex;align-items:center;gap:12px;width:100%;color:var(--muted);font-family:var(--mf);font-size:.55rem;letter-spacing:.12em;margin:4px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.btn-admin{background:none;border:1px solid var(--border);color:var(--muted);font-family:var(--mf);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;padding:10px 20px;cursor:pointer;transition:border-color .2s,color .2s;width:100%;}
+.btn-admin:hover{border-color:var(--muted);color:var(--text);}
+
+.stats-row{display:flex;justify-content:center;gap:0;margin-top:72px;border:1px solid var(--border);max-width:680px;width:100%;animation:fadeUp .6s .5s both;}
+.stat{flex:1;padding:20px 24px;border-right:1px solid var(--border);text-align:left;}
+.stat:last-child{border-right:none;}
+.stat-val{font-family:var(--hf);font-size:2rem;color:var(--accent);letter-spacing:.04em;}
+.stat-lbl{font-family:var(--mf);font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+
+.landing-footer{padding:20px 48px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.footer-copy{font-family:var(--mf);font-size:.52rem;color:var(--muted);letter-spacing:.1em;}
+.footer-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse-dot 2s ease-in-out infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.7);}}
+
+/* ═══════════════════════════════════════════════════
+   MODAL CONTRASEÑA ADMIN
+═══════════════════════════════════════════════════ */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(7,7,10,.88);backdrop-filter:blur(8px);z-index:9999;align-items:center;justify-content:center;}
+.modal-overlay.active{display:flex;}
+.modal{background:var(--s1);border:1px solid var(--border);padding:48px 40px;width:100%;max-width:400px;position:relative;animation:modalIn .35s cubic-bezier(.22,1,.36,1) forwards;}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+.modal-close{position:absolute;top:16px;right:20px;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;transition:color .2s;}
+.modal-close:hover{color:var(--text);}
+.modal-eyebrow{font-family:var(--mf);font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--a2);margin-bottom:10px;}
+.modal-title{font-family:var(--hf);font-size:2rem;letter-spacing:.06em;color:var(--text);margin-bottom:6px;}
+.modal-sub{font-size:.8rem;color:var(--muted);line-height:1.6;margin-bottom:28px;}
+.modal-label{font-family:var(--mf);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px;}
+.modal-input{width:100%;background:var(--s2);border:1px solid var(--border);color:var(--text);font-family:var(--mf);font-size:.85rem;padding:14px 16px;letter-spacing:.08em;outline:none;transition:border-color .2s;}
+.modal-input:focus{border-color:var(--accent);}
+.modal-input.error{border-color:var(--a2);}
+.modal-error{font-family:var(--mf);font-size:.58rem;color:var(--a2);letter-spacing:.1em;margin-top:8px;display:none;}
+.modal-error.active{display:block;}
+.modal-btn{width:100%;padding:16px;background:var(--accent);color:#000;font-family:var(--hf);font-size:1.3rem;letter-spacing:.1em;border:none;cursor:pointer;margin-top:12px;transition:opacity .2s,transform .15s;}
+.modal-btn:hover{opacity:.9;transform:translateY(-1px);}
+.modal-shake{animation:shake .4s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-8px);}40%{transform:translateX(8px);}60%{transform:translateX(-5px);}80%{transform:translateX(5px);}}
+
+/* ═══════════════════════════════════════════════════
+   PÁGINA 2 — ENCUESTA
+═══════════════════════════════════════════════════ */
+#page-survey{position:relative;}
+.survey-wrap{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;}
+
+.survey-header{display:flex;align-items:center;justify-content:space-between;padding:20px 40px;border-bottom:1px solid var(--border);}
+.survey-logo{font-family:var(--hf);font-size:1.6rem;letter-spacing:.08em;color:var(--accent);}
+.survey-logo span{color:var(--text);opacity:.4;}
+.progress-wrap{display:flex;align-items:center;gap:12px;}
+.progress-label{font-family:var(--mf);font-size:.6rem;color:var(--muted);letter-spacing:.12em;}
+.progress-track{width:180px;height:2px;background:var(--border);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .6s cubic-bezier(.22,1,.36,1);}
+
+.back-to-home{font-family:var(--mf);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:none;border:none;cursor:pointer;transition:color .2s;}
+.back-to-home:hover{color:var(--accent);}
+
+.stage{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+.screen{display:none;width:100%;max-width:680px;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) forwards;}
+.screen.active{display:block;}
+
+/* Intro */
+.intro-eyebrow{font-family:var(--mf);font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;}
+.intro-title{font-family:var(--hf);font-size:clamp(3rem,8vw,6rem);line-height:.95;color:var(--text);margin-bottom:20px;}
+.intro-title em{color:var(--accent);font-style:normal;}
+.intro-sub{font-size:1rem;color:var(--muted);line-height:1.7;max-width:500px;margin-bottom:36px;}
+.intro-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:40px;}
+.chip{font-family:var(--mf);font-size:.6rem;padding:6px 14px;border:1px solid var(--border);color:var(--muted);letter-spacing:.08em;border-radius:2px;}
+
+/* Question */
+.q-meta{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+.q-num{font-family:var(--hf);font-size:3rem;color:var(--border);line-height:1;}
+.q-category{font-family:var(--mf);font-size:.6rem;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);padding:4px 10px;border:1px solid var(--border);}
+.q-text{font-family:var(--hf);font-size:clamp(1.4rem,3.5vw,2.4rem);line-height:1.1;color:var(--text);margin-bottom:8px;letter-spacing:.02em;}
+.q-hint{font-size:.8rem;color:var(--muted);margin-bottom:28px;}
+.step-dots{display:flex;gap:6px;margin-bottom:28px;}
+.step-dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:all .3s;}
+.step-dot.done{background:rgba(200,242,59,.5);}
+.step-dot.current{background:var(--accent);transform:scale(1.4);}
+
+/* Options */
+.options{display:grid;gap:10px;}
+.options.grid-2{grid-template-columns:1fr 1fr;}
+.opt{background:var(--s1);border:1px solid var(--border);padding:14px 18px;cursor:pointer;transition:border-color .2s,background .2s,transform .15s;display:flex;align-items:center;gap:14px;user-select:none;}
+.opt:hover{border-color:rgba(200,242,59,.5);transform:translateX(3px);}
+.opt.selected{border-color:var(--accent);background:rgba(200,242,59,.07);}
+.opt.selected .opt-radio{background:var(--accent);border-color:var(--accent);}
+.opt.selected .opt-radio::after{opacity:1;}
+.opt-radio{width:16px;height:16px;border:1.5px solid var(--border);border-radius:50%;flex-shrink:0;position:relative;transition:all .2s;}
+.opt-radio::after{content:'';position:absolute;inset:3px;background:#000;border-radius:50%;opacity:0;transition:opacity .2s;}
+.opt-idx{font-family:var(--mf);font-size:.8rem;color:var(--accent);font-weight:700;min-width:28px;flex-shrink:0;}
+.opt-text{flex:1;}
+.opt-title{font-size:.9rem;font-weight:600;color:var(--text);}
+.opt-sub{font-size:.72rem;color:var(--muted);margin-top:2px;}
+.opt.multi .opt-radio{border-radius:3px;}
+.opt.multi.selected .opt-radio{background:var(--accent);border-color:var(--accent);}
+.opt.multi.selected .opt-radio::after{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 10 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 5l2.5 2.5L8 3' stroke='%23000' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") center/10px no-repeat;opacity:1;}
+
+/* Nav */
+.nav{display:flex;align-items:center;justify-content:space-between;margin-top:28px;}
+.btn-back-q{font-family:var(--mf);font-size:.65rem;color:var(--muted);background:none;border:none;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;transition:color .2s;padding:10px 0;}
+.btn-back-q:hover{color:var(--text);}
+.btn-next{font-family:var(--hf);font-size:1rem;letter-spacing:.12em;background:var(--accent);color:#000;border:none;padding:14px 36px;cursor:pointer;transition:all .2s;}
+.btn-next:hover:not(:disabled){background:#d4f545;transform:translateX(3px);}
+.btn-next:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;}
+
+/* Result */
+.result-header{text-align:center;margin-bottom:36px;}
+.result-badge{display:inline-block;font-family:var(--mf);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;padding:6px 16px;border:1px solid var(--accent);color:var(--accent);margin-bottom:16px;}
+.result-title{font-family:var(--hf);font-size:clamp(2rem,5vw,3.5rem);color:var(--text);margin-bottom:8px;line-height:1;}
+.result-subtitle{font-size:.88rem;color:var(--muted);max-width:460px;margin:0 auto;}
+.profile-card{background:var(--s1);border:1px solid var(--accent);padding:24px;margin-bottom:28px;position:relative;overflow:hidden;}
+.profile-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--a2),var(--a3));}
+.profile-type-label{font-family:var(--mf);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.profile-type-name{font-family:var(--hf);font-size:1.8rem;color:var(--accent);margin-bottom:10px;letter-spacing:.04em;}
+.profile-desc{font-size:.84rem;color:var(--muted);line-height:1.7;margin-bottom:16px;}
+.profile-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.profile-tag{font-family:var(--mf);font-size:.56rem;padding:4px 10px;border:1px solid var(--border);color:var(--muted);}
+.events-label{font-family:var(--mf);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.events-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.event-cards{display:grid;gap:10px;}
+.ev-card{background:var(--s1);border:1px solid var(--border);padding:18px 22px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both;}
+.ev-rank{font-family:var(--hf);font-size:2.2rem;line-height:1;}
+.ev-type{font-family:var(--mf);font-size:.52rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;}
+.ev-name{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:3px;}
+.ev-reason{font-size:.7rem;color:var(--muted);line-height:1.5;}
+.ev-score-wrap{text-align:right;}
+.ev-score{font-family:var(--hf);font-size:1.6rem;line-height:1;}
+.ev-score-label{font-family:var(--mf);font-size:.5rem;color:var(--muted);text-transform:uppercase;}
+.ev-bar{width:55px;height:3px;background:var(--border);border-radius:2px;margin-top:5px;margin-left:auto;overflow:hidden;}
+.ev-bar-fill{height:100%;border-radius:2px;transition:width 1.2s cubic-bezier(.22,1,.36,1);}
+.result-cta{text-align:center;margin-top:36px;padding-top:28px;border-top:1px solid var(--border);}
+.result-cta p{font-size:.8rem;color:var(--muted);margin-bottom:18px;}
+.btn-restart{font-family:var(--hf);font-size:.9rem;letter-spacing:.12em;background:transparent;color:var(--accent);border:1px solid var(--accent);padding:12px 30px;cursor:pointer;transition:all .2s;margin-right:12px;}
+.btn-restart:hover{background:var(--accent);color:#000;}
+.btn-home-link{font-family:var(--hf);font-size:.9rem;letter-spacing:.12em;background:transparent;color:var(--muted);border:1px solid var(--border);padding:12px 30px;cursor:pointer;transition:all .2s;}
+.btn-home-link:hover{color:var(--text);border-color:var(--muted);}
+
+.ld{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--a2);animation:pulse-ld 1.4s infinite;margin-right:6px;vertical-align:middle;}
+@keyframes pulse-ld{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.3;transform:scale(.6);}}
+.confetti-piece{position:fixed;width:8px;height:8px;pointer-events:none;z-index:9000;animation:confettiFall linear forwards;}
+@keyframes confettiFall{0%{opacity:1;transform:translateY(-20px) rotate(0deg);}100%{opacity:0;transform:translateY(100vh) rotate(720deg);}}
+
+/* ═══════════════════════════════════════════════════
+   PÁGINA 3 — ADMIN DASHBOARD
+═══════════════════════════════════════════════════ */
+#page-admin{background:#0a0a0a;}
+.admin-wrap{padding:24px;font-family:'DM Sans',sans-serif;}
+
+/* Admin header */
+.ph{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid #2a2a2a;}
+.ph h1{font-family:var(--hf);font-size:2.8rem;letter-spacing:.06em;color:var(--accent);line-height:1;}
+.ph p{font-family:var(--mf);font-size:.65rem;color:#666;letter-spacing:.18em;text-transform:uppercase;margin-top:4px;}
+.ph-right{display:flex;align-items:center;gap:12px;}
+.badge{font-family:var(--mf);font-size:.7rem;background:var(--accent);color:#000;padding:6px 14px;letter-spacing:.1em;font-weight:700;}
+.btn-logout{font-family:var(--mf);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;background:none;border:1px solid #2a2a2a;color:#666;padding:6px 14px;cursor:pointer;transition:all .2s;}
+.btn-logout:hover{border-color:#666;color:var(--text);}
+
+/* Grid */
+.grid{display:grid;grid-template-columns:240px 1fr 260px;gap:2px;background:#2a2a2a;border:1px solid #2a2a2a;}
+.cell{background:#111;padding:20px;position:relative;overflow:hidden;}
+.cl{font-family:var(--hf);font-size:.75rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.cl::after{content:'';flex:1;height:1px;background:#2a2a2a;}
+
+/* Location */
+.c-loc{grid-column:1;grid-row:1/3;}
+.loc-list{list-style:none;}
+.loc-item{padding:6px 0;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;gap:8px;}
+.loc-item:last-child{border-bottom:none;}
+.loc-rank{font-family:var(--mf);font-size:.75rem;color:var(--accent);font-weight:700;min-width:22px;}
+.loc-name{font-size:.8rem;font-weight:700;color:#f0ede6;}
+.loc-pop{font-family:var(--mf);font-size:.55rem;color:var(--a2);margin-top:1px;}
+.loc-bw{margin-top:3px;height:3px;background:#2a2a2a;border-radius:2px;}
+.loc-bf{height:3px;background:var(--accent);border-radius:2px;transition:width 1.2s cubic-bezier(.22,1,.36,1);}
+
+/* Demographics */
+.c-demo{grid-column:1;grid-row:3;}
+.demo-wrap{height:100px;margin-bottom:12px;}
+.demo-leg{display:flex;flex-wrap:wrap;gap:8px;}
+.demo-li{display:flex;align-items:center;gap:5px;font-size:.68rem;color:#666;}
+.demo-dot{width:8px;height:8px;border-radius:50%;}
+
+/* Consumption */
+.c-cons{grid-column:2;grid-row:1;}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ci{background:#1a1a1a;padding:12px;border-left:2px solid var(--accent);}
+.ci-lbl{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#666;margin-bottom:4px;}
+.ci-val{font-family:var(--mf);font-size:1.1rem;color:#f0ede6;font-weight:700;}
+.ci-sub{font-size:.68rem;color:#666;margin-top:2px;}
+.peak-row{margin-top:14px;display:flex;gap:2px;}
+.pbw{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.pbb{width:100%;height:40px;background:#1a1a1a;display:flex;align-items:flex-end;}
+.pbf{width:100%;background:var(--accent);opacity:.85;transition:height 1s cubic-bezier(.22,1,.36,1);}
+.pbl{font-family:var(--mf);font-size:.55rem;color:#666;text-align:center;}
+
+/* Library */
+.c-aud{grid-column:2;grid-row:2/5;}
+.lib-filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.fb{font-family:var(--mf);font-size:.6rem;padding:5px 12px;border:1px solid #2a2a2a;background:transparent;color:#666;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .18s;}
+.fb:hover{border-color:var(--accent);color:var(--accent);}
+.fb.active{background:var(--accent);color:#000;border-color:var(--accent);}
+.fb.active.ec{background:#ff5a1f;border-color:#ff5a1f;}
+.fb.active.ek{background:#4af0ff;border-color:#4af0ff;}
+.fb.active.em{background:#f0c840;border-color:#f0c840;}
+.fb.active.ei{background:#c44af0;border-color:#c44af0;}
+.lib-ct{font-family:var(--mf);font-size:.6rem;color:#666;margin-bottom:10px;}
+.lib-ct span{color:var(--accent);}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:8px;max-height:500px;overflow-y:auto;padding-right:4px;}
+.lib-grid::-webkit-scrollbar{width:3px;}
+.lib-grid::-webkit-scrollbar-thumb{background:var(--accent);}
+.sc{background:#1a1a1a;border:1px solid #2a2a2a;padding:12px;cursor:pointer;transition:border-color .2s,transform .15s;position:relative;}
+.sc:hover{border-color:var(--accent);transform:translateY(-1px);}
+.sc-ev{position:absolute;top:0;right:0;font-size:.5rem;font-family:var(--mf);padding:2px 6px;text-transform:uppercase;letter-spacing:.06em;color:#000;}
+.sc-name{font-family:var(--hf);font-size:.95rem;color:#f0ede6;letter-spacing:.04em;margin-top:4px;margin-bottom:4px;line-height:1.2;}
+.sc-age{font-family:var(--mf);font-size:.58rem;color:var(--a2);margin-bottom:6px;}
+.sc-tags{display:flex;flex-wrap:wrap;gap:3px;}
+.sc-tag{font-size:.55rem;font-family:var(--mf);background:#2a2a2a;color:#666;padding:1px 5px;}
+.sc-freq{font-size:.62rem;color:#666;margin-top:6px;border-top:1px solid #2a2a2a;padding-top:5px;}
+
+/* Modal Admin */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;z-index:10000;align-items:center;justify-content:center;}
+.mo.open{display:flex;}
+.mb{background:#111;border:1px solid var(--accent);padding:28px;max-width:480px;width:90%;position:relative;}
+.mc{position:absolute;top:12px;right:16px;background:none;border:none;color:#666;font-size:1.2rem;cursor:pointer;}
+.mt{font-family:var(--hf);font-size:1.6rem;color:var(--accent);margin-bottom:6px;}
+.ma{font-family:var(--mf);font-size:.7rem;color:var(--a2);margin-bottom:14px;}
+.ms{margin-bottom:12px;}
+.msl{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:#666;margin-bottom:5px;}
+.mtags{display:flex;flex-wrap:wrap;gap:5px;}
+.mtag{font-size:.65rem;font-family:var(--mf);background:#2a2a2a;color:#f0ede6;padding:3px 8px;}
+.mcom{font-size:.78rem;color:#666;line-height:1.6;}
+
+/* Funnel */
+.c-beh{grid-column:3;grid-row:1/3;}
+.funnel{display:flex;flex-direction:column;gap:4px;}
+.fs{display:flex;align-items:center;gap:10px;padding:8px 10px;background:#1a1a1a;border-left:3px solid transparent;transition:border-color .2s;}
+.fs:hover{border-left-color:var(--accent);}
+.fbo{flex:1;height:5px;background:#2a2a2a;border-radius:3px;overflow:hidden;}
+.fbi{height:100%;border-radius:3px;transition:width 1.4s cubic-bezier(.22,1,.36,1);}
+.fi{display:flex;flex-direction:column;min-width:85px;}
+.fl{font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:#666;}
+.fv{font-family:var(--mf);font-size:.8rem;color:#f0ede6;font-weight:700;}
+.fd{font-family:var(--mf);font-size:.55rem;color:var(--a2);}
+.kpi-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
+.kpi-b{background:#1a1a1a;padding:10px;text-align:center;}
+.kpi-v{font-family:var(--mf);font-size:1.2rem;color:var(--accent);font-weight:700;}
+.kpi-n{font-size:.58rem;color:#666;text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
+
+/* Competitors */
+.c-comp{grid-column:3;grid-row:3;}
+.comp-list{list-style:none;}
+.comp-item{padding:7px 0;border-bottom:1px solid #2a2a2a;font-size:.72rem;display:flex;align-items:center;gap:8px;}
+.comp-item:last-child{border-bottom:none;}
+.comp-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+.comp-a{color:var(--accent);text-decoration:none;}
+.comp-a:hover{text-decoration:underline;}
+
+/* Interest */
+.c-int{grid-column:3;grid-row:4/6;}
+.itags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.itag{font-size:.65rem;font-family:var(--mf);padding:5px 10px;border:1px solid #2a2a2a;color:#666;cursor:default;transition:all .2s;}
+.itag:hover{border-color:var(--accent);color:var(--accent);background:rgba(200,242,59,.05);}
+.itag.hot{border-color:var(--a2);color:var(--a2);background:rgba(255,90,31,.06);}
+.sn{margin-top:16px;padding:10px;background:#1a1a1a;border-left:2px solid #666;}
+.sn p{font-size:.65rem;color:#666;line-height:1.6;}
+
+/* Traffic */
+.c-traf{grid-column:2;grid-row:5;}
+.tbars{display:flex;flex-direction:column;gap:8px;}
+.tr{display:grid;grid-template-columns:90px 1fr 50px;align-items:center;gap:10px;}
+.tn{font-size:.72rem;color:#666;text-transform:uppercase;letter-spacing:.06em;}
+.tbb{height:6px;background:#2a2a2a;border-radius:3px;overflow:hidden;}
+.tbf{height:100%;background:var(--accent);border-radius:3px;transition:width 1.2s cubic-bezier(.22,1,.36,1);}
+.tv{font-family:var(--mf);font-size:.65rem;color:var(--accent);text-align:right;}
+
+.tip{position:fixed;background:var(--accent);color:#000;font-family:var(--mf);font-size:.65rem;padding:6px 10px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:999;max-width:260px;line-height:1.5;}
+.ld-admin{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--a2);animation:pulse-dot 1.4s ease-in-out infinite;margin-right:6px;}
+
+/* ═══════════════════════════════════════════════════
+   PANEL LATERAL — DATOS DE ENCUESTA
+═══════════════════════════════════════════════════ */
+
+/* Botón flotante para abrir el panel */
+.survey-panel-btn{
+  position:fixed;right:0;top:50%;transform:translateY(-50%);
+  background:var(--accent);color:#000;
+  font-family:var(--hf);font-size:.75rem;letter-spacing:.14em;
+  writing-mode:vertical-rl;text-orientation:mixed;
+  padding:18px 10px;cursor:pointer;border:none;
+  z-index:500;transition:background .2s,padding .2s;
+  box-shadow:-4px 0 20px rgba(200,242,59,.2);
+}
+.survey-panel-btn:hover{background:#d4f545;padding:18px 14px;}
+.survey-panel-btn .spb-icon{writing-mode:horizontal-tb;font-size:.9rem;display:block;margin-bottom:8px;}
+
+/* Overlay oscuro */
+.sp-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.5);z-index:600;
+  backdrop-filter:blur(2px);
+}
+.sp-overlay.open{display:block;}
+
+/* Panel principal */
+.survey-panel{
+  position:fixed;right:-640px;top:0;bottom:0;width:640px;
+  background:#0d0d0d;border-left:1px solid #2a2a2a;
+  z-index:700;overflow-y:auto;
+  transition:right .4s cubic-bezier(.22,1,.36,1);
+  display:flex;flex-direction:column;
+}
+.survey-panel.open{right:0;}
+.survey-panel::-webkit-scrollbar{width:3px;}
+.survey-panel::-webkit-scrollbar-thumb{background:#333;}
+
+/* Panel header */
+.sp-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px;border-bottom:1px solid #2a2a2a;
+  position:sticky;top:0;background:#0d0d0d;z-index:10;
+}
+.sp-title{font-family:var(--hf);font-size:1.4rem;letter-spacing:.08em;color:var(--accent);}
+.sp-subtitle{font-family:var(--mf);font-size:.52rem;color:#555;letter-spacing:.14em;text-transform:uppercase;margin-top:2px;}
+.sp-close{background:none;border:1px solid #2a2a2a;color:#666;font-size:1rem;width:32px;height:32px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+.sp-close:hover{border-color:#666;color:#f0ede6;}
+
+/* Tabs de navegación interna */
+.sp-tabs{display:flex;border-bottom:1px solid #2a2a2a;padding:0 24px;}
+.sp-tab{
+  font-family:var(--mf);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:12px 16px;cursor:pointer;color:#555;border:none;background:none;
+  border-bottom:2px solid transparent;transition:all .2s;margin-bottom:-1px;
+}
+.sp-tab:hover{color:#999;}
+.sp-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* Contador de respuestas */
+.sp-counter{
+  display:flex;align-items:center;gap:16px;
+  padding:16px 24px;border-bottom:1px solid #1a1a1a;
+  background:#111;
+}
+.sp-count-item{text-align:center;}
+.sp-count-val{font-family:var(--hf);font-size:1.6rem;color:var(--accent);line-height:1;}
+.sp-count-lbl{font-family:var(--mf);font-size:.48rem;color:#555;text-transform:uppercase;letter-spacing:.1em;margin-top:2px;}
+.sp-count-sep{width:1px;height:36px;background:#2a2a2a;}
+
+/* Secciones del panel */
+.sp-section{padding:20px 24px;border-bottom:1px solid #1a1a1a;}
+.sp-sec-title{
+  font-family:var(--hf);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px;
+}
+.sp-sec-title::after{content:'';flex:1;height:1px;background:#2a2a2a;}
+
+/* Estado vacío */
+.sp-empty{
+  text-align:center;padding:48px 24px;
+  font-family:var(--mf);font-size:.65rem;color:#444;letter-spacing:.1em;line-height:2;
+}
+.sp-empty-icon{font-size:2rem;display:block;margin-bottom:12px;opacity:.3;}
+
+/* ── TAB 1: ESTADÍSTICAS AGREGADAS ─── */
+.sp-q-block{margin-bottom:20px;}
+.sp-q-label{font-family:var(--mf);font-size:.58rem;color:#777;letter-spacing:.1em;margin-bottom:10px;line-height:1.5;}
+.sp-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.sp-bar-name{font-size:.68rem;color:#aaa;min-width:130px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sp-bar-track{flex:1;height:5px;background:#1e1e1e;border-radius:3px;overflow:hidden;}
+.sp-bar-fill{height:100%;border-radius:3px;transition:width .8s cubic-bezier(.22,1,.36,1);}
+.sp-bar-pct{font-family:var(--mf);font-size:.55rem;color:#555;min-width:32px;text-align:right;}
+.sp-bar-count{font-family:var(--mf);font-size:.52rem;color:#444;min-width:20px;text-align:right;}
+
+/* ── TAB 2: PERFILES ─── */
+.sp-profile-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;}
+.sp-profile-card{
+  background:#111;border:1px solid #222;padding:14px 12px;text-align:center;
+  cursor:pointer;transition:border-color .2s,transform .15s;
+}
+.sp-profile-card:hover{transform:translateY(-2px);}
+.sp-profile-num{font-family:var(--hf);font-size:2rem;line-height:1;}
+.sp-profile-name{font-family:var(--mf);font-size:.5rem;text-transform:uppercase;letter-spacing:.1em;color:#666;margin-top:4px;line-height:1.4;}
+.sp-profile-pct{font-size:.65rem;color:#999;margin-top:4px;}
+
+/* ── TAB 3: RESPUESTAS INDIVIDUALES ─── */
+.sp-response-row{
+  background:#111;border:1px solid #1e1e1e;padding:12px 14px;margin-bottom:6px;
+  cursor:pointer;transition:border-color .2s;
+}
+.sp-response-row:hover{border-color:#333;}
+.sp-resp-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.sp-resp-id{font-family:var(--mf);font-size:.55rem;color:#444;letter-spacing:.1em;}
+.sp-resp-time{font-family:var(--mf);font-size:.52rem;color:#333;}
+.sp-resp-profile{font-family:var(--mf);font-size:.6rem;font-weight:700;padding:2px 8px;}
+.sp-resp-answers{display:flex;flex-wrap:wrap;gap:4px;}
+.sp-resp-chip{font-family:var(--mf);font-size:.5rem;padding:2px 6px;background:#1a1a1a;color:#555;border:1px solid #252525;}
+
+/* Detalle expandido */
+.sp-resp-detail{
+  display:none;margin-top:10px;padding-top:10px;border-top:1px solid #1e1e1e;
+}
+.sp-resp-detail.open{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.sp-detail-item{font-size:.62rem;}
+.sp-detail-key{color:#555;text-transform:uppercase;letter-spacing:.08em;font-size:.52rem;font-family:var(--mf);}
+.sp-detail-val{color:#aaa;margin-top:1px;}
+
+/* ── TAB 4: TABLA EXPORTABLE ─── */
+.sp-table-wrap{overflow-x:auto;}
+.sp-table{width:100%;border-collapse:collapse;font-family:var(--mf);font-size:.55rem;}
+.sp-table th{
+  background:#111;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;
+  padding:8px 10px;border-bottom:1px solid #2a2a2a;text-align:left;white-space:nowrap;
+  font-size:.5rem;
+}
+.sp-table td{
+  padding:7px 10px;border-bottom:1px solid #161616;color:#888;
+  white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis;
+}
+.sp-table tr:hover td{background:#111;color:#ccc;}
+
+.sp-export-bar{
+  display:flex;align-items:center;gap:8px;
+  padding:12px 24px;border-top:1px solid #1a1a1a;
+  background:#0d0d0d;position:sticky;bottom:0;
+}
+.sp-export-btn{
+  font-family:var(--mf);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:8px 18px;cursor:pointer;border:none;transition:all .2s;
+}
+.sp-export-btn.csv{background:var(--accent);color:#000;}
+.sp-export-btn.csv:hover{background:#d4f545;}
+.sp-export-btn.json{background:transparent;color:#666;border:1px solid #2a2a2a;}
+.sp-export-btn.json:hover{border-color:#666;color:#aaa;}
+.sp-export-info{font-family:var(--mf);font-size:.5rem;color:#333;letter-spacing:.08em;margin-left:auto;}
+
+/* ── TAB 5: ANÁLISIS IA ─── */
+.sp-ai-header{
+  padding:20px 24px 0;
+}
+.sp-ai-key-row{
+  display:flex;gap:8px;align-items:center;margin-bottom:16px;
+}
+.sp-ai-key-input{
+  flex:1;background:#111;border:1px solid #2a2a2a;color:#aaa;
+  font-family:var(--mf);font-size:.6rem;padding:10px 12px;
+  letter-spacing:.06em;outline:none;transition:border-color .2s;
+}
+.sp-ai-key-input:focus{border-color:var(--accent);}
+.sp-ai-key-input::placeholder{color:#333;}
+
+.sp-ai-run-btn{
+  background:var(--accent);color:#000;border:none;
+  font-family:var(--hf);font-size:.85rem;letter-spacing:.1em;
+  padding:10px 20px;cursor:pointer;white-space:nowrap;
+  transition:opacity .2s,transform .15s;flex-shrink:0;
+}
+.sp-ai-run-btn:hover{opacity:.85;transform:translateY(-1px);}
+.sp-ai-run-btn:disabled{background:#333;color:#666;cursor:not-allowed;transform:none;}
+
+.sp-ai-prompt-wrap{padding:0 24px 16px;}
+.sp-ai-prompt-label{font-family:var(--mf);font-size:.52rem;color:#444;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;}
+.sp-ai-prompt-box{
+  width:100%;background:#0a0a0a;border:1px solid #1e1e1e;color:#777;
+  font-family:var(--mf);font-size:.58rem;padding:10px 12px;
+  resize:vertical;min-height:90px;outline:none;line-height:1.6;
+  transition:border-color .2s;letter-spacing:.03em;
+}
+.sp-ai-prompt-box:focus{border-color:#333;}
+
+/* Estado de carga */
+.sp-ai-loading{
+  display:none;padding:32px 24px;text-align:center;
+}
+.sp-ai-loading.active{display:block;}
+.sp-ai-spinner{
+  width:32px;height:32px;border:2px solid #1e1e1e;
+  border-top-color:var(--accent);border-radius:50%;
+  animation:spin .8s linear infinite;margin:0 auto 16px;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.sp-ai-loading-text{font-family:var(--mf);font-size:.6rem;color:#555;letter-spacing:.12em;}
+.sp-ai-dots::after{
+  content:'';animation:dots 1.4s steps(4,end) infinite;
+}
+@keyframes dots{0%{content:'';}25%{content:'.';}50%{content:'..';}75%{content:'...';}100%{content:'';}}
+
+/* Resultado */
+.sp-ai-result{
+  display:none;padding:0 24px 24px;
+}
+.sp-ai-result.active{display:block;}
+.sp-ai-result-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #1a1a1a;
+}
+.sp-ai-result-title{font-family:var(--hf);font-size:1rem;letter-spacing:.1em;color:var(--accent);}
+.sp-ai-result-meta{font-family:var(--mf);font-size:.5rem;color:#444;letter-spacing:.1em;}
+.sp-ai-copy-btn{
+  font-family:var(--mf);font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;
+  background:transparent;border:1px solid #2a2a2a;color:#555;
+  padding:5px 12px;cursor:pointer;transition:all .2s;
+}
+.sp-ai-copy-btn:hover{border-color:#666;color:#aaa;}
+
+/* Clusters renderizados */
+.sp-cluster-card{
+  background:#0f0f0f;border:1px solid #1e1e1e;
+  border-left:3px solid var(--accent);padding:16px;margin-bottom:12px;
+  transition:border-color .2s;
+}
+.sp-cluster-card:hover{border-color:#333;}
+.sp-cluster-num{font-family:var(--mf);font-size:.5rem;color:#444;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;}
+.sp-cluster-name{font-family:var(--hf);font-size:1.1rem;letter-spacing:.06em;color:var(--text);margin-bottom:8px;}
+.sp-cluster-body{font-size:.75rem;color:#666;line-height:1.7;white-space:pre-wrap;}
+.sp-cluster-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px;}
+.sp-cluster-tag{font-family:var(--mf);font-size:.48rem;padding:2px 8px;border:1px solid #252525;color:#555;}
+
+/* Texto crudo (fallback) */
+.sp-ai-raw{
+  font-family:var(--mf);font-size:.62rem;color:#777;line-height:1.8;
+  white-space:pre-wrap;background:#080808;padding:16px;border:1px solid #1a1a1a;
+}
+
+.sp-ai-error{
+  padding:16px 24px;
+  font-family:var(--mf);font-size:.62rem;color:var(--a2);
+  line-height:1.6;display:none;
+}
+.sp-ai-error.active{display:block;}
+
+/* ═══════════════════════════════════════════════════
+   ANIMACIÓN COMPARTIDA
+═══════════════════════════════════════════════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+@media(max-width:600px){
+  .landing-header,.landing-footer{padding:16px 20px;}
+  .hero{padding:40px 20px;}
+  .stats-row{flex-direction:column;}
+  .stat{border-right:none;border-bottom:1px solid var(--border);}
+  .survey-header{padding:16px 20px;}
+  .stage{padding:20px 16px;}
+  .options.grid-2{grid-template-columns:1fr;}
+  .progress-track{width:100px;}
+  .grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<!-- ════════════════════════════════════════════
+     PÁGINA 1: LANDING
+════════════════════════════════════════════ -->
+<div id="page-landing" class="page active">
+  <div class="landing-wrap">
+    <header class="landing-header">
+      <div class="logo">PÁRAMO<span>·</span>PRESENTA</div>
+      <div class="header-tag">Análisis de Audiencias / 2025</div>
+    </header>
+
+    <main class="hero">
+      <div class="hero-eyebrow">Proyecto de investigación de audiencias</div>
+      <h1 class="hero-title">
+        ENCUENTRA TU
+        <em>EVENTO</em>
+        PERFECTO
+      </h1>
+      <p class="hero-sub">
+        Una encuesta diseñada para conocer qué tipo de experiencia cultural
+        conecta <strong>contigo</strong>. Tus respuestas nos ayudan a entender
+        mejor a nuestra audiencia y mejorar lo que ofrecemos.
+      </p>
+
+      <div class="cta-group">
+        <button class="btn-primary" onclick="goToSurvey()">
+          EMPIEZA
+          <span class="btn-arrow">→</span>
+        </button>
+        <div class="info-chips">
+          <span class="chip-small">5 minutos</span>
+          <span class="chip-small">12 preguntas</span>
+          <span class="chip-small">resultado personalizado</span>
+        </div>
+        <div class="divider">acceso restringido</div>
+        <button class="btn-admin" onclick="openAdminModal()">
+          soy administrador
+        </button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat"><div class="stat-val">12</div><div class="stat-lbl">Preguntas</div></div>
+        <div class="stat"><div class="stat-val">5+</div><div class="stat-lbl">Géneros musicales</div></div>
+        <div class="stat"><div class="stat-val">100%</div><div class="stat-lbl">Anónimo</div></div>
+        <div class="stat"><div class="stat-val">55</div><div class="stat-lbl">Segmentos</div></div>
+      </div>
+    </main>
+
+    <footer class="landing-footer">
+      <div class="footer-copy">© 2025 Páramo Presenta — Análisis de Audiencias</div>
+      <div class="footer-dot"></div>
+      <div class="footer-copy">Proyecto académico</div>
+    </footer>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     MODAL CONTRASEÑA ADMIN
+════════════════════════════════════════════ -->
+<div class="modal-overlay" id="adminModal" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modalBox">
+    <button class="modal-close" onclick="closeAdminModal()">✕</button>
+    <div class="modal-eyebrow">Acceso restringido</div>
+    <div class="modal-title">PANEL ADMIN</div>
+    <p class="modal-sub">Sección exclusiva para el equipo de análisis. Ingresa la contraseña para continuar.</p>
+    <label class="modal-label" for="adminPass">Contraseña</label>
+    <input class="modal-input" type="password" id="adminPass" placeholder="••••••••••" autocomplete="off" onkeydown="handleModalKeydown(event)"/>
+    <div class="modal-error" id="passError">Contraseña incorrecta. Intenta nuevamente.</div>
+    <button class="modal-btn" onclick="checkPassword()">INGRESAR →</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PÁGINA 2: ENCUESTA
+════════════════════════════════════════════ -->
+<div id="page-survey" class="page">
+  <div class="survey-wrap">
+    <header class="survey-header">
+      <div class="survey-logo">PARAMO <span>/</span> PRESENTA</div>
+      <div class="progress-wrap">
+        <span class="progress-label" id="progressLabel">INICIO</span>
+        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      </div>
+      <button class="back-to-home" onclick="goToLanding()">← Inicio</button>
+    </header>
+
+    <main class="stage">
+      <!-- INTRO -->
+      <div class="screen active" id="screen-0">
+        <div class="intro-eyebrow"><span class="ld"></span>Descubre tu próxima experiencia</div>
+        <h1 class="intro-title">ENCUENTRA<br>TU EVENTO<br><em>PERFECTO</em></h1>
+        <p class="intro-sub">Responde 12 preguntas rápidas y te mostraremos qué tipo de evento de Páramo Presenta está hecho exactamente para ti.</p>
+        <div class="intro-chips">
+          <span class="chip">Festival</span>
+          <span class="chip">Concierto</span>
+          <span class="chip">Corporativo</span>
+          <span class="chip">Comedia</span>
+          <span class="chip">Exp. Inmersiva</span>
+          <span class="chip">3 minutos</span>
+          <span class="chip">12 preguntas</span>
+        </div>
+        <button class="btn-next" style="font-size:1.1rem;padding:16px 48px;" onclick="startQuiz()">COMENZAR →</button>
+      </div>
+
+      <!-- QUIZ -->
+      <div class="screen" id="screen-q">
+        <div class="step-dots" id="stepDots"></div>
+        <div class="q-meta">
+          <div class="q-num" id="qNum">01</div>
+          <div class="q-category" id="qCat">CATEGORIA</div>
+        </div>
+        <h2 class="q-text" id="qText"></h2>
+        <p class="q-hint" id="qHint"></p>
+        <div id="qOptions"></div>
+        <div class="nav">
+          <button class="btn-back-q" id="btnBack" onclick="goBack()">← ANTERIOR</button>
+          <button class="btn-next" id="btnNext" disabled>SIGUIENTE →</button>
+        </div>
+      </div>
+
+      <!-- RESULT -->
+      <div class="screen" id="screen-result">
+        <div class="result-header">
+          <div class="result-badge">Tu Perfil de Asistente</div>
+          <h2 class="result-title">Tu perfil está listo</h2>
+          <p class="result-subtitle" id="resultSubtitle"></p>
+        </div>
+        <div class="profile-card">
+          <div class="profile-type-label">Eres un / una</div>
+          <div class="profile-type-name" id="profileTypeName"></div>
+          <p class="profile-desc" id="profileDesc"></p>
+          <div class="profile-tags" id="profileTags"></div>
+        </div>
+        <div>
+          <div class="events-label">Eventos recomendados para ti</div>
+          <div class="event-cards" id="eventCards"></div>
+        </div>
+        <div class="result-cta">
+          <p>Tus respuestas han sido registradas para mejorar la experiencia de Páramo Presenta.</p>
+          <button class="btn-restart" onclick="restartQuiz()">REPETIR EL TEST</button>
+          <button class="btn-home-link" onclick="goToLanding()">← INICIO</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PÁGINA 3: ADMIN DASHBOARD
+════════════════════════════════════════════ -->
+<div id="page-admin" class="page">
+  <div class="admin-wrap">
+    <header class="ph">
+      <div>
+        <h1>PÁRAMO PRESENTA</h1>
+        <p><span class="ld-admin"></span>Audience Summary Dashboard · Análisis de Audiencias</p>
+      </div>
+      <div class="ph-right">
+        <div class="badge" id="badge">MES / AÑO</div>
+        <button class="btn-logout" onclick="goToLanding()">← Salir</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="cell c-loc"><div class="cl">Ubicación · Colombia</div><ul class="loc-list" id="locList"></ul></div>
+      <div class="cell c-cons">
+        <div class="cl">Consumo de Contenido</div>
+        <div class="cg" id="cg"></div>
+        <div style="margin-top:16px;"><div class="cl" style="font-size:.6rem;margin-bottom:8px;">Pico de Tráfico por Día</div><div class="peak-row" id="peakRow"></div></div>
+      </div>
+      <div class="cell c-beh"><div class="cl">Embudo de Conversión</div><div class="funnel" id="funnel"></div><div class="kpi-g" id="kpiG"></div></div>
+      <div class="cell c-aud">
+        <div class="cl">Biblioteca de Audiencias</div>
+        <div class="lib-filters" id="libF"></div>
+        <div class="lib-ct" id="libCt"></div>
+        <div class="lib-grid" id="libG"></div>
+      </div>
+      <div class="cell c-demo"><div class="cl">Demografía</div><div class="demo-wrap"><canvas id="dc" width="180" height="100"></canvas></div><div class="demo-leg" id="demoLeg"></div></div>
+      <div class="cell c-comp"><div class="cl">Competidores</div><ul class="comp-list" id="compList"></ul></div>
+      <div class="cell c-traf"><div class="cl">Fuentes de Tráfico</div><div class="tbars" id="tbars"></div></div>
+      <div class="cell c-int"><div class="cl">Temas de Interés</div><div class="itags" id="itags"></div><div class="sn" style="margin-top:16px;"><div class="cl" style="font-size:.58rem;margin-bottom:6px;">Fuentes de Datos</div><p>Nielsen · Google Analytics · FB Insights · SimilarWeb · ComScore · IDC · DMP's · In-house</p></div></div>
+    </div>
+
+    <div class="mo" id="mo"><div class="mb"><button class="mc" id="mc">✕</button><div class="mt" id="mt"></div><div class="ma" id="ma"></div><div class="ms"><div class="msl">Tipo de Evento</div><div class="mtags" id="mev"></div></div><div class="ms"><div class="msl">Intereses</div><div class="mtags" id="mtags"></div></div><div class="ms"><div class="msl">Comportamiento</div><div class="mcom" id="mcom"></div></div><div class="ms"><div class="msl">Frecuencia</div><div class="mcom" id="mfreq"></div></div></div></div>
+    <div class="tip" id="tip"></div>
+  </div>
+
+  <!-- BOTÓN FLOTANTE PANEL ENCUESTA -->
+  <button class="survey-panel-btn" id="surveyPanelBtn" onclick="openSurveyPanel()">
+    <span class="spb-icon">📊</span>
+    DATOS ENCUESTA
+  </button>
+
+  <!-- OVERLAY -->
+  <div class="sp-overlay" id="spOverlay" onclick="closeSurveyPanel()"></div>
+
+  <!-- PANEL LATERAL -->
+  <div class="survey-panel" id="surveyPanel">
+    <div class="sp-header">
+      <div>
+        <div class="sp-title">DATOS DE ENCUESTA</div>
+        <div class="sp-subtitle">Respuestas en tiempo real · localStorage</div>
+      </div>
+      <button class="sp-close" onclick="closeSurveyPanel()">✕</button>
+    </div>
+
+    <!-- CONTADORES -->
+    <div class="sp-counter" id="spCounter">
+      <div class="sp-count-item"><div class="sp-count-val" id="spTotal">0</div><div class="sp-count-lbl">Respuestas</div></div>
+      <div class="sp-count-sep"></div>
+      <div class="sp-count-item"><div class="sp-count-val" id="spToday">0</div><div class="sp-count-lbl">Hoy</div></div>
+      <div class="sp-count-sep"></div>
+      <div class="sp-count-item"><div class="sp-count-val" id="spTopProfile">—</div><div class="sp-count-lbl">Perfil top</div></div>
+      <div class="sp-count-sep"></div>
+      <div class="sp-count-item"><div class="sp-count-val" id="spAvgScore">—</div><div class="sp-count-lbl">Ciudad top</div></div>
+    </div>
+
+    <!-- TABS -->
+    <div class="sp-tabs">
+      <button class="sp-tab active" onclick="switchSpTab('stats',this)">Estadísticas</button>
+      <button class="sp-tab" onclick="switchSpTab('profiles',this)">Perfiles</button>
+      <button class="sp-tab" onclick="switchSpTab('individual',this)">Individuales</button>
+      <button class="sp-tab" onclick="switchSpTab('tabla',this)">Tabla / Export</button>
+      <button class="sp-tab" onclick="switchSpTab('ia',this)">✦ IA</button>
+    </div>
+
+    <!-- TAB: ESTADÍSTICAS AGREGADAS -->
+    <div id="spTab-stats" class="sp-tab-content">
+      <div id="spStatsContent"></div>
+    </div>
+
+    <!-- TAB: PERFILES -->
+    <div id="spTab-profiles" class="sp-tab-content" style="display:none;">
+      <div class="sp-section" id="spProfilesContent"></div>
+    </div>
+
+    <!-- TAB: INDIVIDUALES -->
+    <div id="spTab-individual" class="sp-tab-content" style="display:none;">
+      <div class="sp-section" id="spIndividualContent"></div>
+    </div>
+
+    <!-- TAB: TABLA + EXPORT -->
+    <div id="spTab-tabla" class="sp-tab-content" style="display:none;flex-direction:column;flex:1;">
+      <div class="sp-section" style="padding-bottom:0;">
+        <div class="sp-table-wrap" id="spTableContent"></div>
+      </div>
+      <div class="sp-export-bar">
+        <button class="sp-export-btn csv" onclick="exportCSV()">⬇ CSV</button>
+        <button class="sp-export-btn json" onclick="exportJSON()">⬇ JSON</button>
+        <span class="sp-export-info" id="spExportInfo">0 registros listos para exportar</span>
+      </div>
+    </div>
+
+    <!-- TAB: ANÁLISIS IA GEMINI -->
+    <div id="spTab-ia" class="sp-tab-content" style="display:none;">
+
+      <!-- API KEY + BOTÓN EJECUTAR -->
+      <div class="sp-ai-header">
+        <div class="sp-sec-title" style="margin-bottom:12px;">Clustering con Gemini AI</div>
+        <div class="sp-ai-key-row">
+          <input
+            class="sp-ai-key-input"
+            type="password"
+            id="geminiApiKey"
+            placeholder="Pega tu API Key de Google Gemini aquí..."
+          />
+          <button class="sp-ai-run-btn" id="aiRunBtn" onclick="runGeminiAnalysis()">
+            ANALIZAR →
+          </button>
+        </div>
+      </div>
+
+      <!-- PROMPT EDITABLE -->
+      <div class="sp-ai-prompt-wrap">
+        <div class="sp-ai-prompt-label">Prompt enviado a Gemini (editable)</div>
+        <textarea class="sp-ai-prompt-box" id="geminiPrompt"></textarea>
+      </div>
+
+      <!-- ESTADO: CARGANDO -->
+      <div class="sp-ai-loading" id="aiLoading">
+        <div class="sp-ai-spinner"></div>
+        <div class="sp-ai-loading-text">Analizando con Gemini<span class="sp-ai-dots"></span></div>
+      </div>
+
+      <!-- ESTADO: ERROR -->
+      <div class="sp-ai-error" id="aiError"></div>
+
+      <!-- RESULTADO -->
+      <div class="sp-ai-result" id="aiResult">
+        <div class="sp-ai-result-header">
+          <div>
+            <div class="sp-ai-result-title">ANÁLISIS DE CLUSTERING</div>
+            <div class="sp-ai-result-meta" id="aiResultMeta"></div>
+          </div>
+          <button class="sp-ai-copy-btn" onclick="copyAiResult()">⎘ Copiar</button>
+        </div>
+        <div id="aiResultBody"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     JAVASCRIPT UNIFICADO
+════════════════════════════════════════════ -->
+<script>
+/* ── NAVEGACIÓN ENTRE PÁGINAS ─────────────────────── */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function goToLanding() { showPage('page-landing'); }
+function goToSurvey()  { showPage('page-survey'); resetSurveyToIntro(); }
+function goToAdmin()   { showPage('page-admin'); initAdmin(); }
+
+/* ── MODAL DE CONTRASEÑA ──────────────────────────── */
+var ADMIN_PASSWORD = 'contraseña';
+
+function openAdminModal() {
+  document.getElementById('adminModal').classList.add('active');
+  setTimeout(function(){ document.getElementById('adminPass').focus(); }, 100);
+}
+
+function closeAdminModal() {
+  document.getElementById('adminModal').classList.remove('active');
+  document.getElementById('adminPass').value = '';
+  document.getElementById('adminPass').classList.remove('error');
+  document.getElementById('passError').classList.remove('active');
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('adminModal')) closeAdminModal();
+}
+
+function handleModalKeydown(e) {
+  if (e.key === 'Enter') checkPassword();
+  if (e.key === 'Escape') closeAdminModal();
+}
+
+function checkPassword() {
+  var input = document.getElementById('adminPass');
+  var error = document.getElementById('passError');
+  var modal = document.getElementById('modalBox');
+
+  if (input.value === ADMIN_PASSWORD) {
+    closeAdminModal();
+    goToAdmin();
+  } else {
+    input.classList.add('error');
+    error.classList.add('active');
+    modal.classList.remove('modal-shake');
+    void modal.offsetWidth;
+    modal.classList.add('modal-shake');
+    input.value = '';
+    input.focus();
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   ENCUESTA — DATOS Y LÓGICA
+══════════════════════════════════════════════════ */
+var QUESTIONS = [
+  {id:"ciudad",cat:"UBICACION",type:"single",text:"Desde que ciudad asistes a eventos?",hint:"Selecciona la ciudad mas cercana a ti.",opts:[{t:"Bogota",v:"bogota"},{t:"Medellin",v:"medellin"},{t:"Cali",v:"cali"},{t:"Barranquilla",v:"barranquilla"},{t:"Cartagena",v:"cartagena"},{t:"Bucaramanga",v:"bucaramanga"},{t:"Pereira / Manizales",v:"eje"},{t:"Cucuta",v:"cucuta"},{t:"Santa Marta",v:"santamarta"},{t:"Otra ciudad",v:"otra"}]},
+  {id:"edad",cat:"DEMOGRAFIA",type:"single",text:"Cuantos anos tienes?",hint:"Esto nos ayuda a personalizar tu recomendacion.",opts:[{t:"Menos de 18",v:"u18"},{t:"18 a 24 anos",v:"18-24"},{t:"25 a 34 anos",v:"25-34"},{t:"35 a 44 anos",v:"35-44"},{t:"45 a 54 anos",v:"45-54"},{t:"55 anos o mas",v:"55+"}]},
+  {id:"genero",cat:"DEMOGRAFIA",type:"single",text:"Con que genero te identificas?",hint:"Tu respuesta es completamente opcional y confidencial.",opts:[{t:"Mujer",v:"f"},{t:"Hombre",v:"m"},{t:"Ambos / Ninguno",v:"nb"}]},
+  {id:"genero_musical",cat:"MUSICA",type:"multi",text:"Que generos musicales te apasionan?",hint:"Elige todos los que quieras.",opts:[{t:"Rock / Metal / Punk",v:"rock"},{t:"Pop / Latin Pop",v:"pop"},{t:"Reggaeton / Urbano / Trap",v:"urbano"},{t:"Electronica / House / Techno",v:"electro"},{t:"Jazz / Soul / Blues",v:"jazz"},{t:"Reggae / Afrobeats",v:"afro"},{t:"Clasica / Opera",v:"clasica"},{t:"Vallenato / Cumbia / Folk",v:"folk"},{t:"K-Pop / J-Pop",v:"kpop"},{t:"Hip-Hop / R&B",v:"hiphop"}]},
+  {id:"tipo_evento",cat:"TIPO DE EVENTO",type:"single",text:"Si pudieras ir a un evento este fin de semana, cual elegirias?",hint:"No hay respuesta incorrecta.",opts:[{t:"Cantar a todo pulmon canciones que ya amo",s:"El setlist de mi vida",v:"concierto"},{t:"Descubrir nuevos sonidos que me sorprendan",s:"Salir con un nuevo artista favorito",v:"festival"},{t:"Bailar sin pensar demasiado",s:"El cuerpo manda, la mente descansa",v:"comedia"},{t:"Escuchar algo que me conecte emocionalmente",s:"Que me erice la piel o me haga llorar",v:"corporativo"},{t:"Vivir un show que me impacte visualmente",s:"Luces, escenografia y efectos epicos",v:"inmersivo"}]},
+  {id:"frecuencia",cat:"COMPORTAMIENTO",type:"single",text:"Con que frecuencia asistes a eventos en vivo?",hint:"Cuenta conciertos, festivales, teatro, etc.",opts:[{t:"Cada semana",s:"1 a 4 veces por semana",v:"weekly"},{t:"Cada 2 o 3 semanas",s:"Dos o tres veces al mes",v:"biweekly"},{t:"Una vez al mes",s:"Aproximadamente 12 veces al ano",v:"monthly"},{t:"Cada 2 o 3 meses",s:"Entre 4 y 6 veces al ano",v:"quarterly"},{t:"1 o 2 veces al ano",s:"Solo para eventos muy especiales",v:"yearly"}]},
+  {id:"precio",cat:"COMPRA",type:"single",text:"Cuanto estarias dispuesto/a a pagar por una entrada?",hint:"Cual es tu rango comodo?",opts:[{t:"$",s:"Accesible - hasta $100.000 COP",v:"low"},{t:"$$",s:"Estandar - $100.000 a $300.000 COP",v:"mid"},{t:"$$$",s:"Premium - mas de $300.000 COP",v:"premium"}]},
+  {id:"anticipacion",cat:"COMPRA",type:"single",text:"Cuando sueles comprar tu boleta?",hint:"Elige la que mejor describe tu comportamiento real.",opts:[{t:"Inmediatamente cuando se anuncia",s:"Soy early bird, no me arriesgo",v:"early"},{t:"Cuando veo el mejor precio",s:"Espero ofertas o descuentos",v:"precio"},{t:"Cuando siento que se va a agotar",s:"La presion de escasez me activa",v:"scarcity"},{t:"A ultima hora",s:"Decido de forma espontanea",v:"last"},{t:"Cuando alguien mas me convence",s:"Necesito que un amigo/a me jale",v:"social"}]},
+  {id:"acompanante",cat:"COMPORTAMIENTO",type:"single",text:"Con quien sueles ir a los eventos?",hint:"",opts:[{t:"Con amigos / amigas",s:"El plan perfecto en grupo",v:"amigos"},{t:"Solo / Sola",s:"Yo, la musica y el momento",v:"solo"},{t:"Con familiares",s:"Hermanos, padres, primos...",v:"familia"},{t:"Con mis hijos",s:"Experiencia compartida en familia",v:"hijos"}]},
+  {id:"red_social",cat:"DIGITAL",type:"single",text:"En que red social te enteras de nuevos eventos?",hint:"La que revisas mas para este tipo de contenido.",opts:[{t:"Instagram",v:"ig"},{t:"TikTok",v:"tiktok"},{t:"X / Twitter",v:"twitter"},{t:"Facebook",v:"fb"},{t:"WhatsApp / grupos",v:"whatsapp"},{t:"Spotify / podcasts",v:"spotify"},{t:"Email / newsletter",v:"email"}]},
+  {id:"horario",cat:"DIGITAL",type:"single",text:"Cuando sueles revisar o comprar entradas online?",hint:"El momento en que mas navegas y tomas decisiones.",opts:[{t:"Manana   (7 - 12 AM)",v:"manana"},{t:"Mediodia (12 - 3 PM)",v:"mediodia"},{t:"Tarde    (3 - 7 PM)",v:"tarde"},{t:"Noche    (7 - 11 PM)",v:"noche"},{t:"Madrugada (11 PM +)",v:"madrugada"}]},
+  {id:"expectativa",cat:"EXPERIENCIA",type:"single",text:"Que es lo mas importante de un evento para ti?",hint:"Elige lo que mas pesa en tu decision.",opts:[{t:"La musica / el artista",s:"El headliner lo es todo",v:"artista"},{t:"La gente y el ambiente",s:"Conectar y vivir el momento",v:"ambiente"},{t:"La experiencia visual",s:"El espacio, las luces, el diseno",v:"visual"},{t:"La relacion precio / valor",s:"Que valga cada peso que pague",v:"precio"},{t:"El servicio y la comodidad",s:"Quiero sentirme bien atendido/a",v:"servicio"}]}
+];
+
+var PROFILES = {
+  festival:{name:"El Festivalero / La Festivalera",desc:"Vives para los festivales. La magia de coincidir con miles de personas que sienten lo mismo es tu habitat natural. Los lineups te los sabes de memoria.",tags:["Energia alta","Open air","Multitudes","Comunidad musical","Camping vibes"]},
+  concierto:{name:"El Fan Devoto / La Fan Devota",desc:"Ver en vivo a tu artista favorito es una experiencia sagrada. Haces fila, memorizas el setlist y llevas la emocion contigo por semanas.",tags:["Fidelidad al artista","Intensidad emocional","Primera fila","Merch collector"]},
+  comedia:{name:"El Reidor / La Reidora",desc:"El humor es tu lenguaje favorito. Valoras la inteligencia y el instante en que una sala entera explota en carcajadas al mismo tiempo.",tags:["Sentido del humor","Critica social","Noches de amigos","Plan redondo"]},
+  inmersivo:{name:"El Explorador / La Exploradora",desc:"No buscas solo ver: buscas entrar, sentir y ser parte. Las experiencias inmersivas y el arte digital son lo tuyo.",tags:["Arte y tecnologia","Asombro","Foto imperdible","Experiencia total"]},
+  corporativo:{name:"El Networker / La Networker",desc:"Entiendes que los mejores eventos mezclan lo profesional con el placer. Valoras el ambiente curado y las conversaciones que abren puertas.",tags:["Conexiones reales","Ambiente premium","Proposito","Elegancia"]}
+};
+
+var EVENT_TYPES = [
+  {key:"festival",label:"Festival",color:"#c8f23b"},
+  {key:"concierto",label:"Concierto",color:"#ff5a1f"},
+  {key:"comedia",label:"Comedia / Stand-Up",color:"#f0c840"},
+  {key:"inmersivo",label:"Exp. Inmersiva",color:"#c44af0"},
+  {key:"corporativo",label:"Evento Corporativo",color:"#4af0ff"}
+];
+
+var EVENT_NAMES = {festival:"Festival Paramo - Experiencia Open Air",concierto:"Conciertos Exclusivos - Paramo Live",comedia:"Noches de Comedia - Paramo Rie",inmersivo:"Experiencias Inmersivas - Paramo Senses",corporativo:"Eventos Corporativos - Paramo Business"};
+var EVENT_REASONS = {festival:"Tu perfil musical y forma de vivir los eventos apunta a un festival.",concierto:"Tienes el ADN del fan: intensidad, fidelidad y emocion pura.",comedia:"Tu forma de disfrutar el plan social es perfecta para el humor en vivo.",inmersivo:"Buscas asombro y experiencias que no puedes ver en ningun otro lugar.",corporativo:"Valoras el entorno curado, las conexiones reales y la excelencia."};
+
+var currentQ = 0;
+var answers = {};
+
+function resetSurveyToIntro() {
+  currentQ = 0; answers = {};
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById('screen-0').classList.add('active');
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('progressLabel').textContent = 'INICIO';
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+}
+
+function updateProgress() {
+  var pct = (currentQ / QUESTIONS.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = currentQ === 0 ? 'INICIO' : (currentQ + ' / ' + QUESTIONS.length);
+}
+
+function startQuiz() { currentQ = 0; showScreen('screen-q'); renderQuestion(); updateProgress(); }
+
+function renderQuestion() {
+  var q = QUESTIONS[currentQ];
+  var dotsEl = document.getElementById('stepDots');
+  dotsEl.innerHTML = '';
+  for (var i = 0; i < QUESTIONS.length; i++) {
+    var d = document.createElement('span');
+    d.className = 'step-dot' + (i < currentQ ? ' done' : (i === currentQ ? ' current' : ''));
+    dotsEl.appendChild(d);
+  }
+  document.getElementById('qNum').textContent = (currentQ + 1 < 10 ? '0' : '') + (currentQ + 1);
+  document.getElementById('qCat').textContent = q.cat;
+  document.getElementById('qText').textContent = q.text;
+  document.getElementById('qHint').textContent = q.hint || '';
+
+  var wrap = document.getElementById('qOptions');
+  wrap.innerHTML = '';
+  wrap.className = 'options' + (q.opts.length >= 6 ? ' grid-2' : '');
+
+  for (var j = 0; j < q.opts.length; j++) {
+    (function(opt, idx) {
+      var div = document.createElement('div');
+      div.className = 'opt' + (q.type === 'multi' ? ' multi' : '');
+      var isSelected = q.type === 'multi' ? ((answers[q.id] || []).indexOf(opt.v) > -1) : answers[q.id] === opt.v;
+      if (isSelected) div.classList.add('selected');
+
+      var radio = document.createElement('div'); radio.className = 'opt-radio'; div.appendChild(radio);
+      var idxSpan = document.createElement('span'); idxSpan.className = 'opt-idx'; idxSpan.textContent = (idx+1<10?'0':'')+(idx+1); div.appendChild(idxSpan);
+      var textBlock = document.createElement('div'); textBlock.className = 'opt-text';
+      var titleEl = document.createElement('div'); titleEl.className = 'opt-title'; titleEl.textContent = opt.t; textBlock.appendChild(titleEl);
+      if (opt.s) { var subEl = document.createElement('div'); subEl.className = 'opt-sub'; subEl.textContent = opt.s; textBlock.appendChild(subEl); }
+      div.appendChild(textBlock);
+
+      div.addEventListener('click', function() {
+        if (q.type === 'single') {
+          wrap.querySelectorAll('.opt').forEach(function(o){ o.classList.remove('selected'); });
+          div.classList.add('selected');
+          answers[q.id] = opt.v;
+        } else {
+          div.classList.toggle('selected');
+          if (!answers[q.id]) answers[q.id] = [];
+          var pos = answers[q.id].indexOf(opt.v);
+          if (div.classList.contains('selected')) { if (pos === -1) answers[q.id].push(opt.v); }
+          else { if (pos > -1) answers[q.id].splice(pos,1); }
+        }
+        validateNext();
+      });
+      wrap.appendChild(div);
+    })(q.opts[j], j);
+  }
+  validateNext();
+  document.getElementById('btnBack').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+}
+
+function validateNext() {
+  var q = QUESTIONS[currentQ];
+  var btn = document.getElementById('btnNext');
+  var valid = q.type === 'single' ? answers[q.id] !== undefined : (answers[q.id]||[]).length > 0;
+  btn.disabled = !valid;
+  var isLast = currentQ === QUESTIONS.length - 1;
+  btn.textContent = isLast ? 'VER MI RESULTADO' : 'SIGUIENTE \u2192';
+  btn.onclick = isLast ? showResult : goNext;
+}
+
+function goNext() { if (currentQ < QUESTIONS.length-1) { currentQ++; updateProgress(); renderQuestion(); window.scrollTo({top:0,behavior:'smooth'}); } }
+function goBack()  { if (currentQ > 0) { currentQ--; updateProgress(); renderQuestion(); } }
+
+function calcScores() {
+  var s = {festival:0,concierto:0,comedia:0,inmersivo:0,corporativo:0};
+  if (answers.tipo_evento) s[answers.tipo_evento] = (s[answers.tipo_evento]||0) + 40;
+  var gmap = {rock:{festival:8,concierto:10},pop:{concierto:10,festival:6},urbano:{concierto:8,festival:7},electro:{festival:12,inmersivo:6},jazz:{concierto:8,corporativo:5},afro:{festival:10,concierto:6},clasica:{concierto:8,corporativo:4},folk:{festival:10,concierto:5},kpop:{concierto:14,festival:8},hiphop:{concierto:9,festival:6}};
+  var genres = answers.genero_musical || [];
+  for (var i=0;i<genres.length;i++) { var m=gmap[genres[i]]||{}; for (var k in m) s[k]=(s[k]||0)+m[k]; }
+  if (answers.precio==='premium'){s.corporativo+=8;s.inmersivo+=5;}
+  if (answers.precio==='low'){s.festival+=5;s.comedia+=5;}
+  if (answers.frecuencia==='weekly'){s.festival+=6;s.concierto+=4;}
+  if (answers.frecuencia==='yearly'){s.inmersivo+=8;s.comedia+=6;}
+  if (answers.acompanante==='solo'){s.inmersivo+=8;s.comedia+=4;}
+  if (answers.acompanante==='hijos'){s.comedia+=8;s.festival+=4;}
+  if (answers.acompanante==='familia'){s.comedia+=6;s.festival+=5;}
+  if (answers.expectativa==='artista'){s.concierto+=10;s.festival+=6;}
+  if (answers.expectativa==='visual'){s.inmersivo+=12;}
+  if (answers.expectativa==='ambiente'){s.festival+=8;s.corporativo+=5;}
+  if (answers.expectativa==='servicio'){s.corporativo+=10;s.inmersivo+=6;}
+  if (answers.anticipacion==='early'){s.festival+=5;s.concierto+=5;}
+  if (answers.edad==='35-44'||answers.edad==='45-54') s.corporativo+=6;
+  return s;
+}
+
+function topKey(scores) { var best=null,bestVal=-1; for (var k in scores){if(scores[k]>bestVal){bestVal=scores[k];best=k;}} return best; }
+
+function showResult() {
+  var scores = calcScores();
+  var top = topKey(scores);
+  var profile = PROFILES[top];
+  var maxScore = 0;
+  for (var k in scores) if (scores[k]>maxScore) maxScore=scores[k];
+
+  document.getElementById('resultSubtitle').textContent = 'Analizamos ' + QUESTIONS.length + ' dimensiones para encontrar el evento hecho para ti.';
+  document.getElementById('profileTypeName').textContent = profile.name;
+  document.getElementById('profileDesc').textContent = profile.desc;
+  var tagsEl = document.getElementById('profileTags'); tagsEl.innerHTML='';
+  for (var i=0;i<profile.tags.length;i++){var sp=document.createElement('span');sp.className='profile-tag';sp.textContent=profile.tags[i];tagsEl.appendChild(sp);}
+
+  var sorted = EVENT_TYPES.slice().sort(function(a,b){return (scores[b.key]||0)-(scores[a.key]||0);});
+  var cardsEl = document.getElementById('eventCards'); cardsEl.innerHTML='';
+
+  for (var j=0;j<sorted.length;j++) {
+    (function(et,rank){
+      var pct = maxScore>0?Math.round(((scores[et.key]||0)/maxScore)*100):0;
+      var card=document.createElement('div'); card.className='ev-card'; card.style.animationDelay=(rank*.1)+'s';
+      var rankEl=document.createElement('div'); rankEl.className='ev-rank'; rankEl.style.color=et.color; rankEl.textContent='#'+(rank+1); card.appendChild(rankEl);
+      var info=document.createElement('div');
+      var typeEl=document.createElement('div'); typeEl.className='ev-type'; typeEl.style.color=et.color; typeEl.textContent=et.label; info.appendChild(typeEl);
+      var nameEl=document.createElement('div'); nameEl.className='ev-name'; nameEl.textContent=EVENT_NAMES[et.key]; info.appendChild(nameEl);
+      var reasonEl=document.createElement('div'); reasonEl.className='ev-reason'; reasonEl.textContent=EVENT_REASONS[et.key]; info.appendChild(reasonEl);
+      card.appendChild(info);
+      var scoreWrap=document.createElement('div'); scoreWrap.className='ev-score-wrap';
+      var scoreEl=document.createElement('div'); scoreEl.className='ev-score'; scoreEl.style.color=et.color; scoreEl.textContent=pct+'%'; scoreWrap.appendChild(scoreEl);
+      var scoreLbl=document.createElement('div'); scoreLbl.className='ev-score-label'; scoreLbl.textContent='match'; scoreWrap.appendChild(scoreLbl);
+      var barWrap=document.createElement('div'); barWrap.className='ev-bar';
+      var barFill=document.createElement('div'); barFill.className='ev-bar-fill'; barFill.style.background=et.color; barFill.style.width='0'; barFill.setAttribute('data-w',pct+'%');
+      barWrap.appendChild(barFill); scoreWrap.appendChild(barWrap); card.appendChild(scoreWrap); cardsEl.appendChild(card);
+    })(sorted[j],j);
+  }
+
+  document.getElementById('progressFill').style.width='100%';
+  document.getElementById('progressLabel').textContent='RESULTADO';
+  showScreen('screen-result');
+  setTimeout(function(){ document.querySelectorAll('.ev-bar-fill').forEach(function(el){el.style.width=el.getAttribute('data-w');}); fireConfetti(); }, 400);
+  saveResponse(scores, top);
+}
+
+function fireConfetti() {
+  var colors=['#c8f23b','#ff5a1f','#4af0ff','#c44af0','#f0c840','#fff'];
+  for (var i=0;i<55;i++){
+    (function(delay){
+      setTimeout(function(){
+        var p=document.createElement('div'); p.className='confetti-piece';
+        var c=colors[Math.floor(Math.random()*colors.length)];
+        var isCircle=Math.random()>.5;
+        p.style.cssText='left:'+(Math.random()*100)+'vw;top:-10px;background:'+c+';border-radius:'+(isCircle?'50%':'2px')+';width:'+(6+Math.random()*8)+'px;height:'+(6+Math.random()*8)+'px;animation-duration:'+(1.5+Math.random()*2)+'s;animation-delay:'+(Math.random()*.4)+'s';
+        document.body.appendChild(p);
+        setTimeout(function(){p.remove();},3000);
+      },delay);
+    })(i*28);
+  }
+}
+
+function saveResponse(scores, profile) {
+  try {
+    var entry={timestamp:new Date().toISOString(),answers:JSON.parse(JSON.stringify(answers)),scores:scores,profile:profile};
+    var all=JSON.parse(localStorage.getItem('paramo_responses')||'[]');
+    all.push(entry);
+    localStorage.setItem('paramo_responses',JSON.stringify(all));
+  } catch(e){}
+}
+
+function restartQuiz() { answers={}; currentQ=0; showScreen('screen-0'); document.getElementById('progressFill').style.width='0%'; document.getElementById('progressLabel').textContent='INICIO'; }
+
+/* ══════════════════════════════════════════════════
+   ADMIN DASHBOARD — DATOS Y RENDER
+══════════════════════════════════════════════════ */
+var adminInitialized = false;
+
+function initAdmin() {
+  if (adminInitialized) return; // solo inicializar una vez
+  adminInitialized = true;
+
+  var EV={festival:{l:"Festival",c:"#c8f23b"},concierto:{l:"Concierto",c:"#ff5a1f"},corporativo:{l:"Corporativo",c:"#4af0ff"},comedia:{l:"Comedia",c:"#f0c840"},inmersivo:{l:"Exp. Inmersiva",c:"#c44af0"}};
+
+  var D={
+    month:"Marzo 2025",
+    locations:[{r:"01",c:"Bogot\u00e1",p:"7.4M hab",pct:100},{r:"02",c:"Medell\u00edn",p:"2.7M hab",pct:82},{r:"03",c:"Cali",p:"2.2M hab",pct:70},{r:"04",c:"Barranquilla",p:"1.2M hab",pct:55},{r:"05",c:"Cartagena",p:"1.0M hab",pct:48},{r:"06",c:"Bucaramanga",p:"580K hab",pct:38},{r:"07",c:"Pereira",p:"470K hab",pct:32},{r:"08",c:"Manizales",p:"430K hab",pct:28},{r:"09",c:"C\u00facuta",p:"740K hab",pct:24},{r:"10",c:"Santa Marta",p:"550K hab",pct:20}],
+    consumption:[{l:"P\u00e1gina m\u00e1s vista",v:"Eventos",s:"48% del tiempo total"},{l:"Tiempo promedio",v:"3:42 min",s:"por sesi\u00f3n"},{l:"Tasa de rebote",v:"38%",s:"-12% vs mes anterior"},{l:"Sesiones/mes",v:"420K",s:"+18% YoY"}],
+    peakDays:[{d:"Lun",p:"40%"},{d:"Mar",p:"35%"},{d:"Mie",p:"30%"},{d:"Jue",p:"55%"},{d:"Vie",p:"85%"},{d:"Sab",p:"100%"},{d:"Dom",p:"65%"}],
+    funnel:[{s:"Impresiones",v:"2.4M",drop:"",pct:100,c:"#c8f23b"},{s:"Clicks",v:"320K",drop:"-86.7%",pct:70,c:"#d4f545"},{s:"Visitas P\u00e1gina",v:"180K",drop:"-43.8%",pct:55,c:"#ff9a5c"},{s:"Registro",v:"42K",drop:"-76.7%",pct:35,c:"#ff6b35"},{s:"Compra",v:"18K",drop:"-57.1%",pct:22,c:"#ff5a1f"},{s:"Recompra",v:"6K",drop:"-66.7%",pct:12,c:"#c44af0"}],
+    kpis:[{v:"$285K",n:"Ticket Promedio COP"},{v:"4.2x",n:"ROAS Promedio"},{v:"68%",n:"Retenci\u00f3n 90d"},{v:"41 d",n:"Ventana de Compra"}],
+    segments:[
+      {id:1,ev:"festival",name:"Millennials Urbanos",age:"25\u201335",tags:["Rock","Indie","Cerveza artesanal","Instagram"],freq:"Vie\u2013S\u00e1b noche",comment:"Alta intenci\u00f3n de compra anticipada. Sensibles al FOMO."},
+      {id:2,ev:"festival",name:"Gen Z Electro",age:"18\u201325",tags:["Electronic","House","Techno","TikTok","LED"],freq:"S\u00e1b noche",comment:"Compran tarde pero en grupo. Viralizan r\u00e1pidamente."},
+      {id:3,ev:"festival",name:"Fans del Pop Masivo",age:"15\u201325",tags:["Pop","K-Pop","Latin Pop","Fandom"],freq:"Fines de semana",comment:"Alt\u00edsima actividad en RRSS. Compran merch con el ticket."},
+      {id:4,ev:"festival",name:"Amantes del Jazz & Soul",age:"28\u201350",tags:["Jazz","Soul","Blues","Cultura"],freq:"S\u00e1b\u2013Dom \u00b7 tarde",comment:"Ticket promedio alto. Prefieren palcos o zonas VIP."},
+      {id:5,ev:"festival",name:"Familia Festivalera",age:"30\u201345",tags:["Familiar","Kids Zone","Folk","Gastronom\u00eda"],freq:"Domingos",comment:"Buscan zonas sin alcohol, actividades para ni\u00f1os."},
+      {id:6,ev:"festival",name:"Hippies & Alternativos",age:"20\u201338",tags:["Folk","Psicodelia","Arte","Sostenibilidad"],freq:"Todo el festival",comment:"Valoran la propuesta art\u00edstica sobre el headliner."},
+      {id:7,ev:"festival",name:"Universitarios Bogotanos",age:"18\u201324",tags:["Indie","Rap","Cerveza Artesanal","Amigos"],freq:"Vie\u2013S\u00e1b noche",comment:"Precio sensible. Se mueven por oferta de \u00faltimo momento."},
+      {id:8,ev:"festival",name:"Turistas Musicales",age:"25\u201340",tags:["Viaje","Hotel","Foto","Experiencia"],freq:"Solo el festival",comment:"Invierten en paquetes completos. Alta valoraci\u00f3n post-evento."},
+      {id:9,ev:"festival",name:"Reggae & Afrobeats Nation",age:"20\u201335",tags:["Reggae","Afrobeats","Dancehall","Cultura"],freq:"S\u00e1b\u2013Dom",comment:"Comunidad muy fiel. Compra early bird con anticipaci\u00f3n."},
+      {id:10,ev:"festival",name:"Mel\u00f3manos VIP",age:"30\u201355",tags:["Cl\u00e1sica","\u00d3pera","Premium","Gourmet"],freq:"S\u00e1bado tarde\u2013noche",comment:"Prioridad: comodidad, sonido y experiencia gastron\u00f3mica."},
+      {id:11,ev:"festival",name:"Activistas Cultura Verde",age:"18\u201335",tags:["Sostenibilidad","Zero Waste","Ambiente","Eco"],freq:"Fines de semana",comment:"Eligen eventos con sellos ecol\u00f3gicos. Boicotean pl\u00e1stico."},
+      {id:12,ev:"festival",name:"Adultos Mayores Activos",age:"55\u201370",tags:["Bolero","Vallenato","Accesibilidad","Tarde"],freq:"S\u00e1b\u2013Dom tarde",comment:"Accesibilidad f\u00edsica cr\u00edtica. Prefieren horarios de tarde."},
+      {id:13,ev:"concierto",name:"Fan\u00e1ticos del Artista",age:"16\u201330",tags:["Fandom","Setlist","Fila","Merch"],freq:"Cualquier d\u00eda",comment:"Compran el d\u00eda del anuncio. Alta intenci\u00f3n de fila."},
+      {id:14,ev:"concierto",name:"Rockeros Hardcore",age:"25\u201345",tags:["Metal","Punk","Pit","Headbang"],freq:"Noche entre semana",comment:"Fieles al g\u00e9nero. Rechazan asientos numerados."},
+      {id:15,ev:"concierto",name:"Parejas & Date Night",age:"25\u201340",tags:["Rom\u00e1ntico","Pop","Balada","VIP"],freq:"Vie\u2013S\u00e1b noche",comment:"Compran pares. Prefieren palcos con mejor visibilidad."},
+      {id:16,ev:"concierto",name:"Mel\u00f3manos de Jazz Live",age:"30\u201355",tags:["Jazz","Improvisaci\u00f3n","Bar","Noche"],freq:"Jue\u2013S\u00e1b noche",comment:"Asistentes recurrentes. Conocen la escena local."},
+      {id:17,ev:"concierto",name:"Fans Urbanos & Trap",age:"16\u201326",tags:["Trap","Drill","Urbano","Freestyle"],freq:"Vie\u2013S\u00e1b noche",comment:"Muy activos en WhatsApp y Telegram para reventa."},
+      {id:18,ev:"concierto",name:"Reggaetoneros Millennials",age:"22\u201334",tags:["Reggaeton","Perreo","Noche","Amigos"],freq:"Vie\u2013Dom",comment:"Compran en grupos de 4\u20136. Usan Instagram Reels."},
+      {id:19,ev:"concierto",name:"Orquestas & Cl\u00e1sica",age:"35\u201365",tags:["Sinf\u00f3nica","\u00d3pera","Camerata","Cultura"],freq:"Mi\u00e9r o S\u00e1b",comment:"Asistencia planificada con meses de anticipaci\u00f3n."},
+      {id:20,ev:"concierto",name:"Indie & Alternativo Local",age:"20\u201332",tags:["Indie","Post-rock","Lo-fi","Descubrimiento"],freq:"Jue\u2013Vie",comment:"Valoran artistas emergentes. Recomiendan por voz a voz."},
+      {id:25,ev:"corporativo",name:"Ejecutivos C-Suite",age:"40\u201360",tags:["Networking","Premium","Gala","Negocios"],freq:"Entre semana",comment:"Requieren facturaci\u00f3n. Valoran exclusividad y protocolo."},
+      {id:26,ev:"corporativo",name:"Equipos de Ventas",age:"25\u201340",tags:["Motivaci\u00f3n","Team Building","Incentivos"],freq:"Jue\u2013Vie",comment:"Asistencia grupal de 20\u2013100 personas."},
+      {id:36,ev:"comedia",name:"Fans de Stand-Up Nativo",age:"22\u201338",tags:["Stand-Up","Podcast","Humor Colombiano"],freq:"Vie\u2013S\u00e1b noche",comment:"Muy fieles al comediante. Compran por Instagram."},
+      {id:37,ev:"comedia",name:"Parejas & Amigos Noche",age:"25\u201342",tags:["Humor","Noche","Bar","Distensi\u00f3n"],freq:"Vie\u2013S\u00e1b",comment:"Plan social. Consumen bebidas y snacks en sala."},
+      {id:45,ev:"inmersivo",name:"Lovers de Arte Digital",age:"22\u201338",tags:["Arte Digital","LED","Mapping","Foto"],freq:"Fines de semana",comment:"Buscan 'la foto perfecta'. Alto impacto en Instagram."},
+      {id:46,ev:"inmersivo",name:"Experiencia Gastro-Sensorial",age:"28\u201350",tags:["Gastronom\u00eda","Cena Teatro","Maridaje"],freq:"S\u00e1b noche",comment:"Ticket m\u00e1s alto. Combinan cultura y gastronom\u00eda."},
+    ],
+    competitors:[{name:"Ticketmaster",url:"ticketmaster.com.co"},{name:"Tu Boleta",url:"tuboleta.com"},{name:"Bodytech Events",url:"bodytech.com.co"},{name:"Move Concerts",url:"moveconcerts.com"},{name:"Eticket",url:"eticket.co"},{name:"SimilarWeb",url:"similarweb.com",note:"(m\u00e9tricas)"},{name:"SEM Rush",url:"semrush.com",note:"(SEO)"}],
+    demographics:[{l:"Mujer 18\u201334",pct:38,c:"#c8f23b"},{l:"Hombre 18\u201334",pct:32,c:"#ff5a1f"},{l:"Mujer 35\u201350",pct:18,c:"#444"},{l:"Hombre 35\u201350",pct:12,c:"#2a2a2a"}],
+    traffic:[{n:"Redes Sociales",p:42},{n:"B\u00fasqueda",p:28},{n:"Directo",p:18},{n:"Referidos",p:9},{n:"Email",p:3}],
+    interests:[{t:"Rock en Espa\u00f1ol",h:1},{t:"Festivales",h:1},{t:"Conciertos",h:0},{t:"Metal",h:0},{t:"Reggaeton",h:1},{t:"Jazz",h:0},{t:"Teatro",h:0},{t:"Indie",h:0},{t:"Afrobeats",h:1},{t:"Pop",h:0},{t:"Electr\u00f3nica",h:0},{t:"Stand-Up",h:1},{t:"Arte Digital",h:0},{t:"Experiencias",h:1},{t:"Trap/Urbano",h:1},{t:"K-Pop",h:0}]
+  };
+
+  document.getElementById('badge').textContent = D.month.toUpperCase();
+
+  // Locations
+  var locList=document.getElementById('locList'); locList.innerHTML='';
+  D.locations.forEach(function(l){ locList.innerHTML+='<li class="loc-item"><span class="loc-rank">'+l.r+'</span><div style="flex:1;"><div class="loc-name">'+l.c+'</div><div class="loc-pop">'+l.p+'</div><div class="loc-bw"><div class="loc-bf" style="width:0" data-w="'+l.pct+'%"></div></div></div><span style="font-family:var(--mf);font-size:.65rem;color:var(--accent)">'+l.pct+'%</span></li>'; });
+
+  // Consumption
+  var cg=document.getElementById('cg'); cg.innerHTML='';
+  D.consumption.forEach(function(c){ cg.innerHTML+='<div class="ci"><div class="ci-lbl">'+c.l+'</div><div class="ci-val">'+c.v+'</div><div class="ci-sub">'+c.s+'</div></div>'; });
+
+  // Peak
+  var pr=document.getElementById('peakRow'); pr.innerHTML='';
+  D.peakDays.forEach(function(d){ pr.innerHTML+='<div class="pbw"><div class="pbb"><div class="pbf" style="height:0" data-h="'+d.p+'"></div></div><span class="pbl">'+d.d+'</span></div>'; });
+
+  // Funnel
+  var fw=document.getElementById('funnel'); fw.innerHTML='';
+  D.funnel.forEach(function(f){ fw.innerHTML+='<div class="fs"><div class="fi"><span class="fl">'+f.s+'</span><span class="fv">'+f.v+'</span><span class="fd">'+(f.drop||'\u2014')+'</span></div><div class="fbo"><div class="fbi" style="width:0;background:'+f.c+'" data-w="'+f.pct+'%"></div></div></div>'; });
+  var kg=document.getElementById('kpiG'); kg.innerHTML='';
+  D.kpis.forEach(function(k){ kg.innerHTML+='<div class="kpi-b"><div class="kpi-v">'+k.v+'</div><div class="kpi-n">'+k.n+'</div></div>'; });
+
+  // Library
+  var libF=document.getElementById('libF');
+  libF.innerHTML='<button class="fb active" data-ev="all">Todos ('+D.segments.length+')</button>';
+  [["festival","ef"],["concierto","ec"],["corporativo","ek"],["comedia","em"],["inmersivo","ei"]].forEach(function(pair){
+    var cnt=D.segments.filter(function(s){return s.ev===pair[0];}).length;
+    libF.innerHTML+='<button class="fb '+pair[1]+'" data-ev="'+pair[0]+'">'+EV[pair[0]].l+' ('+cnt+')</button>';
+  });
+
+  function renderLib(filter){
+    var grid=document.getElementById('libG'),ct=document.getElementById('libCt');
+    grid.innerHTML='';
+    var items=filter==='all'?D.segments:D.segments.filter(function(s){return s.ev===filter;});
+    ct.innerHTML='Mostrando <span>'+items.length+'</span> de <span>'+D.segments.length+'</span> segmentos';
+    items.forEach(function(s){
+      var ev=EV[s.ev];
+      var card=document.createElement('div'); card.className='sc';
+      card.innerHTML='<span class="sc-ev" style="background:'+ev.c+'">'+ev.l+'</span><div class="sc-name">'+s.name+'</div><div class="sc-age">Edad: '+s.age+'</div><div class="sc-tags">'+s.tags.map(function(t){return '<span class="sc-tag">'+t+'</span>';}).join('')+'</div><div class="sc-freq">'+s.freq+'</div>';
+      card.addEventListener('click',function(){openSegModal(s,ev);});
+      grid.appendChild(card);
+    });
+  }
+
+  libF.addEventListener('click',function(e){
+    var btn=e.target.closest('.fb'); if(!btn) return;
+    libF.querySelectorAll('.fb').forEach(function(b){b.classList.remove('active');}); btn.classList.add('active'); renderLib(btn.dataset.ev);
+  });
+  renderLib('all');
+
+  function openSegModal(s,ev){
+    document.getElementById('mt').textContent=s.name;
+    document.getElementById('ma').textContent='Edad: '+s.age+' · '+ev.l;
+    document.getElementById('mev').innerHTML='<span class="mtag" style="background:'+ev.c+';color:#000">'+ev.l+'</span>';
+    document.getElementById('mtags').innerHTML=s.tags.map(function(t){return '<span class="mtag">'+t+'</span>';}).join('');
+    document.getElementById('mcom').textContent=s.comment;
+    document.getElementById('mfreq').textContent=s.freq;
+    document.getElementById('mo').classList.add('open');
+  }
+  document.getElementById('mc').addEventListener('click',function(){document.getElementById('mo').classList.remove('open');});
+  document.getElementById('mo').addEventListener('click',function(e){if(e.target===e.currentTarget)e.currentTarget.classList.remove('open');});
+
+  // Competitors
+  var cl=document.getElementById('compList'); cl.innerHTML='';
+  D.competitors.forEach(function(c){ cl.innerHTML+='<li class="comp-item"><span class="comp-dot"></span><a class="comp-a" href="https://'+c.url+'" target="_blank">'+c.name+'</a>'+(c.note?'<span style="font-size:.62rem;color:#666">'+c.note+'</span>':'')+'</li>'; });
+
+  // Demographics
+  (function(){
+    var cv=document.getElementById('dc'),ctx=cv.getContext('2d');
+    var cx=50,cy=50,r=40,ri=22,a=-Math.PI/2;
+    D.demographics.forEach(function(d){ var sl=(d.pct/100)*2*Math.PI; ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,a,a+sl);ctx.closePath();ctx.fillStyle=d.c;ctx.fill();a+=sl; });
+    ctx.beginPath();ctx.arc(cx,cy,ri,0,2*Math.PI);ctx.fillStyle='#111';ctx.fill();
+    var leg=document.getElementById('demoLeg'); leg.innerHTML='';
+    D.demographics.forEach(function(d){ leg.innerHTML+='<div class="demo-li"><span class="demo-dot" style="background:'+d.c+'"></span>'+d.l+' ('+d.pct+'%)</div>'; });
+  })();
+
+  // Traffic
+  var tb=document.getElementById('tbars'); tb.innerHTML='';
+  D.traffic.forEach(function(t){ tb.innerHTML+='<div class="tr"><span class="tn">'+t.n+'</span><div class="tbb"><div class="tbf" style="width:0" data-w="'+t.p+'%"></div></div><span class="tv">'+t.p+'%</span></div>'; });
+
+  // Interests
+  var it=document.getElementById('itags'); it.innerHTML='';
+  D.interests.forEach(function(i){ it.innerHTML+='<span class="itag'+(i.h?' hot':'')+'">'+i.t+'</span>'; });
+
+  // Animate bars
+  setTimeout(function(){ document.querySelectorAll('.loc-bf').forEach(function(e){e.style.width=e.dataset.w;}); },300);
+  setTimeout(function(){ document.querySelectorAll('.pbf').forEach(function(e){e.style.height=e.dataset.h;}); },400);
+  setTimeout(function(){ document.querySelectorAll('.tbf').forEach(function(e){e.style.width=e.dataset.w;}); },500);
+  setTimeout(function(){ document.querySelectorAll('.fbi').forEach(function(e){e.style.width=e.dataset.w;}); },600);
+}
+
+/* ══════════════════════════════════════════════════
+   PANEL LATERAL — DATOS DE ENCUESTA
+══════════════════════════════════════════════════ */
+
+// Etiquetas legibles para cada campo de la encuesta
+var FIELD_LABELS = {
+  ciudad:        'Ciudad',
+  edad:          'Edad',
+  genero:        'Género',
+  genero_musical:'Géneros musicales',
+  tipo_evento:   'Tipo de evento preferido',
+  frecuencia:    'Frecuencia de asistencia',
+  precio:        'Rango de precio',
+  anticipacion:  'Momento de compra',
+  acompanante:   'Acompañante habitual',
+  red_social:    'Red social principal',
+  horario:       'Horario de navegación',
+  expectativa:   'Expectativa principal'
+};
+
+var VALUE_LABELS = {
+  // ciudad
+  bogota:'Bogotá', medellin:'Medellín', cali:'Cali', barranquilla:'Barranquilla',
+  cartagena:'Cartagena', bucaramanga:'Bucaramanga', eje:'Pereira / Manizales',
+  cucuta:'Cúcuta', santamarta:'Santa Marta', otra:'Otra ciudad',
+  // edad
+  u18:'Menos de 18', '18-24':'18–24 años', '25-34':'25–34 años',
+  '35-44':'35–44 años', '45-54':'45–54 años', '55+':'55 años o más',
+  // genero
+  f:'Mujer', m:'Hombre', nb:'No binario / Prefiero no decir',
+  // genero_musical
+  rock:'Rock / Metal / Punk', pop:'Pop / Latin Pop', urbano:'Reggaeton / Urbano',
+  electro:'Electrónica / House', jazz:'Jazz / Soul / Blues', afro:'Reggae / Afrobeats',
+  clasica:'Clásica / Ópera', folk:'Vallenato / Cumbia', kpop:'K-Pop / J-Pop', hiphop:'Hip-Hop / R&B',
+  // tipo_evento
+  concierto:'Concierto', festival:'Festival', comedia:'Comedia / Stand-Up',
+  corporativo:'Evento Corporativo', inmersivo:'Exp. Inmersiva',
+  // frecuencia
+  weekly:'Cada semana', biweekly:'Cada 2–3 semanas', monthly:'Una vez al mes',
+  quarterly:'Cada 2–3 meses', yearly:'1–2 veces al año',
+  // precio
+  low:'Accesible (hasta $100K)', mid:'Estándar ($100K–$300K)', premium:'Premium (+$300K)',
+  // anticipacion
+  early:'Inmediatamente al anuncio', precio:'Cuando hay mejor precio',
+  scarcity:'Cuando se va a agotar', last:'A última hora', social:'Cuando me convencen',
+  // acompanante
+  amigos:'Con amigos/as', solo:'Solo/a', familia:'Con familiares', hijos:'Con mis hijos',
+  // red_social
+  ig:'Instagram', tiktok:'TikTok', twitter:'X / Twitter', fb:'Facebook',
+  whatsapp:'WhatsApp', spotify:'Spotify / Podcasts', email:'Email / Newsletter',
+  // horario
+  manana:'Mañana (7–12)', mediodia:'Mediodía (12–3)', tarde:'Tarde (3–7)',
+  noche:'Noche (7–11)', madrugada:'Madrugada (11+)',
+  // expectativa
+  artista:'La música / artista', ambiente:'La gente y ambiente',
+  visual:'La experiencia visual', servicio:'El servicio y comodidad'
+};
+
+var PROFILE_COLORS = {
+  festival:'#c8f23b', concierto:'#ff5a1f', comedia:'#f0c840',
+  inmersivo:'#c44af0', corporativo:'#4af0ff'
+};
+var PROFILE_NAMES = {
+  festival:'Festival', concierto:'Concierto', comedia:'Comedia',
+  inmersivo:'Inmersivo', corporativo:'Corporativo'
+};
+
+function label(val) {
+  if (Array.isArray(val)) return val.map(function(v){ return VALUE_LABELS[v]||v; }).join(', ');
+  return VALUE_LABELS[val] || val || '—';
+}
+
+function getResponses() {
+  try { return JSON.parse(localStorage.getItem('paramo_responses') || '[]'); }
+  catch(e) { return []; }
+}
+
+// ── ABRIR / CERRAR ────────────────────────────────
+function openSurveyPanel() {
+  document.getElementById('surveyPanel').classList.add('open');
+  document.getElementById('spOverlay').classList.add('open');
+  renderSurveyPanel();
+}
+function closeSurveyPanel() {
+  document.getElementById('surveyPanel').classList.remove('open');
+  document.getElementById('spOverlay').classList.remove('open');
+}
+
+// ── TABS ──────────────────────────────────────────
+function switchSpTab(tab, btn) {
+  document.querySelectorAll('.sp-tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.sp-tab-content').forEach(function(c){ c.style.display='none'; });
+  btn.classList.add('active');
+  document.getElementById('spTab-'+tab).style.display = (tab==='tabla') ? 'flex' : 'block';
+}
+
+// ── RENDER COMPLETO ───────────────────────────────
+function renderSurveyPanel() {
+  var responses = getResponses();
+  renderCounters(responses);
+  renderStats(responses);
+  renderProfiles(responses);
+  renderIndividual(responses);
+  renderTable(responses);
+}
+
+// ── CONTADORES ────────────────────────────────────
+function renderCounters(responses) {
+  var today = new Date().toDateString();
+  var todayCount = responses.filter(function(r){
+    return new Date(r.timestamp).toDateString() === today;
+  }).length;
+
+  // perfil top
+  var profileCounts = {};
+  responses.forEach(function(r){ profileCounts[r.profile] = (profileCounts[r.profile]||0)+1; });
+  var topProfile = Object.keys(profileCounts).sort(function(a,b){ return profileCounts[b]-profileCounts[a]; })[0];
+
+  // ciudad top
+  var ciudadCounts = {};
+  responses.forEach(function(r){ var c=r.answers.ciudad||'—'; ciudadCounts[c]=(ciudadCounts[c]||0)+1; });
+  var topCiudad = Object.keys(ciudadCounts).sort(function(a,b){ return ciudadCounts[b]-ciudadCounts[a]; })[0];
+
+  document.getElementById('spTotal').textContent   = responses.length;
+  document.getElementById('spToday').textContent   = todayCount;
+  document.getElementById('spTopProfile').textContent = topProfile ? (VALUE_LABELS[topProfile]||topProfile) : '—';
+  document.getElementById('spAvgScore').textContent = topCiudad ? (VALUE_LABELS[topCiudad]||topCiudad).split(' ')[0] : '—';
+}
+
+// ── TAB ESTADÍSTICAS ──────────────────────────────
+function renderStats(responses) {
+  var el = document.getElementById('spStatsContent');
+  if (responses.length === 0) {
+    el.innerHTML = '<div class="sp-empty"><span class="sp-empty-icon">📭</span>Aún no hay respuestas registradas.<br>Comparte la encuesta para empezar a ver datos aquí.</div>';
+    return;
+  }
+
+  var fields = ['ciudad','edad','genero','tipo_evento','frecuencia','precio','anticipacion','acompanante','red_social','horario','expectativa','genero_musical'];
+  var colors = ['#c8f23b','#ff5a1f','#4af0ff','#c44af0','#f0c840','#7af27a','#f2a07a','#7ac4f2','#f27aad','#a07af2','#f2e07a','#7af2e0'];
+
+  var html = '';
+  fields.forEach(function(field, fi) {
+    var counts = {};
+    var total = 0;
+    responses.forEach(function(r) {
+      var val = r.answers[field];
+      if (!val) return;
+      if (Array.isArray(val)) {
+        val.forEach(function(v){ counts[v]=(counts[v]||0)+1; total++; });
+      } else {
+        counts[val]=(counts[val]||0)+1; total++;
+      }
+    });
+    if (Object.keys(counts).length === 0) return;
+
+    var sorted = Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a]; });
+    var color = colors[fi % colors.length];
+
+    html += '<div class="sp-section"><div class="sp-sec-title">'+(FIELD_LABELS[field]||field)+'</div>';
+    sorted.forEach(function(v) {
+      var pct = total > 0 ? Math.round((counts[v]/total)*100) : 0;
+      var lbl = VALUE_LABELS[v] || v;
+      html += '<div class="sp-bar-row">';
+      html += '<span class="sp-bar-name" title="'+lbl+'">'+lbl+'</span>';
+      html += '<div class="sp-bar-track"><div class="sp-bar-fill" style="width:0;background:'+color+'" data-w="'+pct+'%"></div></div>';
+      html += '<span class="sp-bar-pct">'+pct+'%</span>';
+      html += '<span class="sp-bar-count">('+counts[v]+')</span>';
+      html += '</div>';
+    });
+    html += '</div>';
+  });
+
+  el.innerHTML = html;
+  // Animar barras con pequeño delay
+  setTimeout(function(){
+    el.querySelectorAll('.sp-bar-fill').forEach(function(b){ b.style.width=b.dataset.w; });
+  }, 80);
+}
+
+// ── TAB PERFILES ──────────────────────────────────
+function renderProfiles(responses) {
+  var el = document.getElementById('spProfilesContent');
+  if (responses.length === 0) {
+    el.innerHTML = '<div class="sp-empty"><span class="sp-empty-icon">👤</span>Sin datos aún.</div>';
+    return;
+  }
+
+  var counts = {festival:0,concierto:0,comedia:0,inmersivo:0,corporativo:0};
+  responses.forEach(function(r){ if(counts[r.profile]!==undefined) counts[r.profile]++; });
+  var total = responses.length;
+
+  var html = '<div class="sp-sec-title">Distribución de perfiles</div>';
+  html += '<div class="sp-profile-grid">';
+  Object.keys(counts).forEach(function(p){
+    var pct = total > 0 ? Math.round((counts[p]/total)*100) : 0;
+    var col = PROFILE_COLORS[p];
+    html += '<div class="sp-profile-card" style="border-color:'+col+'22">';
+    html += '<div class="sp-profile-num" style="color:'+col+'">'+counts[p]+'</div>';
+    html += '<div class="sp-profile-name" style="color:'+col+'">'+PROFILE_NAMES[p]+'</div>';
+    html += '<div class="sp-profile-pct">'+pct+'%</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // Scores promedio por perfil
+  html += '<div class="sp-sec-title" style="margin-top:20px;">Scores promedio por perfil</div>';
+  var profileKeys = ['festival','concierto','comedia','inmersivo','corporativo'];
+  profileKeys.forEach(function(p) {
+    var matching = responses.filter(function(r){ return r.profile===p; });
+    if (matching.length === 0) return;
+    var avgScore = Math.round(matching.reduce(function(acc,r){ return acc+(r.scores[p]||0); },0)/matching.length);
+    var col = PROFILE_COLORS[p];
+    html += '<div class="sp-bar-row" style="margin-bottom:10px;">';
+    html += '<span class="sp-bar-name">'+PROFILE_NAMES[p]+' ('+matching.length+')</span>';
+    html += '<div class="sp-bar-track"><div class="sp-bar-fill" style="width:0;background:'+col+'" data-w="'+Math.min(avgScore,100)+'%"></div></div>';
+    html += '<span class="sp-bar-pct">'+avgScore+'pts</span>';
+    html += '</div>';
+  });
+
+  el.innerHTML = html;
+  setTimeout(function(){
+    el.querySelectorAll('.sp-bar-fill').forEach(function(b){ b.style.width=b.dataset.w; });
+  }, 80);
+}
+
+// ── TAB INDIVIDUALES ──────────────────────────────
+function renderIndividual(responses) {
+  var el = document.getElementById('spIndividualContent');
+  if (responses.length === 0) {
+    el.innerHTML = '<div class="sp-empty"><span class="sp-empty-icon">📋</span>Sin respuestas individuales aún.</div>';
+    return;
+  }
+
+  var html = '<div class="sp-sec-title">'+responses.length+' respuesta'+(responses.length!==1?'s':'')+' registrada'+(responses.length!==1?'s':'')+'</div>';
+
+  // Mostrar de más reciente a más antigua
+  var sorted = responses.slice().reverse();
+  sorted.forEach(function(r, i) {
+    var col   = PROFILE_COLORS[r.profile] || '#888';
+    var pname = PROFILE_NAMES[r.profile]  || r.profile;
+    var ts    = new Date(r.timestamp);
+    var timeStr = ts.toLocaleDateString('es-CO') + ' ' + ts.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
+
+    // Chips resumen de respuestas clave
+    var chips = [
+      r.answers.ciudad, r.answers.edad, r.answers.tipo_evento,
+      r.answers.frecuencia, r.answers.precio
+    ].filter(Boolean).map(function(v){ return '<span class="sp-resp-chip">'+label(v)+'</span>'; }).join('');
+
+    // Detalle completo
+    var detail = '';
+    var fields = Object.keys(r.answers);
+    fields.forEach(function(f){
+      detail += '<div class="sp-detail-item">';
+      detail += '<div class="sp-detail-key">'+(FIELD_LABELS[f]||f)+'</div>';
+      detail += '<div class="sp-detail-val">'+label(r.answers[f])+'</div>';
+      detail += '</div>';
+    });
+
+    html += '<div class="sp-response-row" onclick="toggleRespDetail(this)">';
+    html += '<div class="sp-resp-top">';
+    html += '<span class="sp-resp-id">#'+(sorted.length-i).toString().padStart(3,'0')+'</span>';
+    html += '<span class="sp-resp-profile" style="background:'+col+'22;color:'+col+'">'+pname+'</span>';
+    html += '<span class="sp-resp-time">'+timeStr+'</span>';
+    html += '</div>';
+    html += '<div class="sp-resp-answers">'+chips+'</div>';
+    html += '<div class="sp-resp-detail">'+detail+'</div>';
+    html += '</div>';
+  });
+
+  el.innerHTML = html;
+}
+
+function toggleRespDetail(row) {
+  var detail = row.querySelector('.sp-resp-detail');
+  detail.classList.toggle('open');
+}
+
+// ── TAB TABLA / EXPORT ────────────────────────────
+function renderTable(responses) {
+  var el  = document.getElementById('spTableContent');
+  var info = document.getElementById('spExportInfo');
+  info.textContent = responses.length + ' registro'+(responses.length!==1?'s':'')+' listo'+(responses.length!==1?'s':'')+' para exportar';
+
+  if (responses.length === 0) {
+    el.innerHTML = '<div class="sp-empty"><span class="sp-empty-icon">📊</span>Sin datos para exportar aún.</div>';
+    return;
+  }
+
+  var fields = ['ciudad','edad','genero','tipo_evento','frecuencia','precio','anticipacion','acompanante','red_social','horario','expectativa','genero_musical'];
+  var html = '<table class="sp-table"><thead><tr>';
+  html += '<th>#</th><th>Fecha</th><th>Perfil</th>';
+  fields.forEach(function(f){ html += '<th>'+(FIELD_LABELS[f]||f)+'</th>'; });
+  html += '</tr></thead><tbody>';
+
+  responses.slice().reverse().forEach(function(r, i) {
+    var col  = PROFILE_COLORS[r.profile]||'#888';
+    var ts   = new Date(r.timestamp);
+    var date = ts.toLocaleDateString('es-CO')+' '+ts.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
+    html += '<tr>';
+    html += '<td style="color:#555">'+(responses.length-i)+'</td>';
+    html += '<td>'+date+'</td>';
+    html += '<td style="color:'+col+';font-weight:700">'+(PROFILE_NAMES[r.profile]||r.profile)+'</td>';
+    fields.forEach(function(f){
+      html += '<td title="'+label(r.answers[f])+'">'+label(r.answers[f])+'</td>';
+    });
+    html += '</tr>';
+  });
+
+  html += '</tbody></table>';
+  el.innerHTML = html;
+}
+
+// ── EXPORTAR ──────────────────────────────────────
+function exportCSV() {
+  var responses = getResponses();
+  if (responses.length === 0) { alert('No hay datos para exportar.'); return; }
+  var fields = ['ciudad','edad','genero','tipo_evento','frecuencia','precio','anticipacion','acompanante','red_social','horario','expectativa','genero_musical'];
+  var headers = ['#','Fecha','Perfil'].concat(fields.map(function(f){ return FIELD_LABELS[f]||f; }));
+  var rows = [headers.join(',')];
+  responses.forEach(function(r, i) {
+    var ts = new Date(r.timestamp).toLocaleString('es-CO');
+    var row = [i+1, '"'+ts+'"', PROFILE_NAMES[r.profile]||r.profile];
+    fields.forEach(function(f){ row.push('"'+label(r.answers[f])+'"'); });
+    rows.push(row.join(','));
+  });
+  var blob = new Blob(['\uFEFF'+rows.join('\n')], {type:'text/csv;charset=utf-8;'});
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href=url; a.download='paramo_encuesta_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function exportJSON() {
+  var responses = getResponses();
+  if (responses.length === 0) { alert('No hay datos para exportar.'); return; }
+  // Versión legible con etiquetas
+  var readable = responses.map(function(r, i) {
+    var ans = {};
+    Object.keys(r.answers).forEach(function(f){ ans[FIELD_LABELS[f]||f] = label(r.answers[f]); });
+    return {
+      id: i+1,
+      timestamp: r.timestamp,
+      perfil: PROFILE_NAMES[r.profile]||r.profile,
+      scores: r.scores,
+      respuestas: ans
+    };
+  });
+  var blob = new Blob([JSON.stringify(readable, null, 2)], {type:'application/json'});
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href=url; a.download='paramo_encuesta_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+/* ══════════════════════════════════════════════════
+   GEMINI AI — CLUSTERING
+══════════════════════════════════════════════════ */
+
+// Variable global para guardar el texto crudo del resultado
+var lastAiRawText = '';
+
+// Construye el prompt con los datos reales de la encuesta
+function buildClusteringPrompt(responses) {
+  var readable = responses.map(function(r, i) {
+    var ans = {};
+    Object.keys(r.answers).forEach(function(f){
+      ans[FIELD_LABELS[f]||f] = label(r.answers[f]);
+    });
+    return {
+      id: i + 1,
+      perfil_asignado: PROFILE_NAMES[r.profile] || r.profile,
+      respuestas: ans
+    };
+  });
+
+  return 'Eres un analista experto en audiencias culturales y marketing de eventos en Colombia.\n\n' +
+    'Tienes los siguientes datos reales de una encuesta aplicada a asistentes de Páramo Presenta ' +
+    '(empresa colombiana de producción de eventos: festivales, conciertos, comedia, experiencias inmersivas y eventos corporativos).\n\n' +
+    'DATOS DE LA ENCUESTA (' + responses.length + ' respuestas):\n' +
+    JSON.stringify(readable, null, 2) + '\n\n' +
+    'Con base en estos datos, realiza un análisis de clustering siguiendo EXACTAMENTE este formato de respuesta:\n\n' +
+    '## CLUSTER [número]: [NOMBRE EN MAYÚSCULAS]\n' +
+    '**Tamaño estimado:** [n] respuestas (~[%]%)\n' +
+    '**Características principales:** [descripción en 2 líneas]\n' +
+    '**Ciudad predominante:** [ciudad]\n' +
+    '**Perfil de evento preferido:** [tipo de evento]\n' +
+    '**Rango de precio típico:** [rango]\n' +
+    '**Red social principal:** [red]\n' +
+    '**Frecuencia de asistencia:** [frecuencia]\n' +
+    '**Estrategia recomendada:** [acción concreta para Páramo Presenta en 2-3 líneas]\n\n' +
+    'Repite este bloque para cada cluster (entre 3 y 5 clusters).\n\n' +
+    'Al final agrega:\n' +
+    '## CLUSTER CON MAYOR OPORTUNIDAD\n' +
+    '[Explica cuál cluster tiene más potencial de crecimiento y por qué, en máximo 4 líneas]\n\n' +
+    'Responde únicamente en español. Sé específico, usa los datos reales y evita generalidades.';
+}
+
+// Inicializa el prompt editable cuando se abre la tab IA
+function initIaTab() {
+  var responses = getResponses();
+  var promptEl = document.getElementById('geminiPrompt');
+
+  if (responses.length === 0) {
+    promptEl.value = '⚠ Aún no hay respuestas de encuesta registradas.\nCompleta al menos una encuesta para que el prompt se construya automáticamente con datos reales.';
+    document.getElementById('aiRunBtn').disabled = true;
+  } else {
+    promptEl.value = buildClusteringPrompt(responses);
+    document.getElementById('aiRunBtn').disabled = false;
+  }
+  // Limpiar resultados anteriores
+  document.getElementById('aiLoading').classList.remove('active');
+  document.getElementById('aiError').classList.remove('active');
+  document.getElementById('aiResult').classList.remove('active');
+}
+
+// Llamado real a la API de Gemini
+async function runGeminiAnalysis() {
+  var apiKey = document.getElementById('geminiApiKey').value.trim();
+  var prompt = document.getElementById('geminiPrompt').value.trim();
+
+  if (!apiKey) {
+    showAiError('⚠ Necesitas ingresar tu API Key de Gemini.\nConsíguela en: aistudio.google.com/app/apikey');
+    return;
+  }
+  if (!prompt) {
+    showAiError('⚠ El prompt está vacío.');
+    return;
+  }
+
+  // Estado: cargando
+  document.getElementById('aiRunBtn').disabled = true;
+  document.getElementById('aiLoading').classList.add('active');
+  document.getElementById('aiError').classList.remove('active');
+  document.getElementById('aiResult').classList.remove('active');
+
+  var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey;
+
+  try {
+    var response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.4,
+          maxOutputTokens: 2048
+        }
+      })
+    });
+
+    var data = await response.json();
+
+    if (!response.ok) {
+      var msg = (data.error && data.error.message) ? data.error.message : 'Error HTTP ' + response.status;
+      throw new Error(msg);
+    }
+
+    if (!data.candidates || !data.candidates[0]) {
+      throw new Error('La API no devolvió resultados. Verifica tu API Key y que esté habilitada.');
+    }
+
+    var text = data.candidates[0].content.parts[0].text;
+    lastAiRawText = text;
+
+    document.getElementById('aiLoading').classList.remove('active');
+    renderAiResult(text);
+
+  } catch (err) {
+    document.getElementById('aiLoading').classList.remove('active');
+    document.getElementById('aiRunBtn').disabled = false;
+    showAiError('Error al conectar con Gemini:\n' + err.message + '\n\nVerifica:\n· Que tu API Key sea válida\n· Que tengas conexión a internet\n· Que la API de Gemini esté habilitada en tu proyecto de Google');
+  }
+}
+
+function showAiError(msg) {
+  var el = document.getElementById('aiError');
+  el.textContent = msg;
+  el.classList.add('active');
+}
+
+// Renderiza la respuesta de Gemini, detectando clusters por el patrón ## CLUSTER
+function renderAiResult(text) {
+  var responses = getResponses();
+  var meta = responses.length + ' respuestas analizadas · ' + new Date().toLocaleString('es-CO');
+  document.getElementById('aiResultMeta').textContent = meta;
+
+  var colors = ['#c8f23b','#ff5a1f','#4af0ff','#c44af0','#f0c840'];
+  var body = document.getElementById('aiResultBody');
+  body.innerHTML = '';
+
+  // Detectar bloques ## CLUSTER o ## CLUSTER CON MAYOR OPORTUNIDAD
+  var sections = text.split(/\n(?=##\s)/);
+  var hasStructure = sections.length > 1;
+
+  if (hasStructure) {
+    sections.forEach(function(section, i) {
+      section = section.trim();
+      if (!section) return;
+
+      // Extraer título del bloque
+      var titleMatch = section.match(/^##\s+(.+)/);
+      if (!titleMatch) return;
+      var title = titleMatch[1].trim();
+      var body_text = section.replace(/^##\s+.+\n?/, '').trim();
+
+      // Convertir **negritas** a <strong>
+      body_text = body_text.replace(/\*\*(.+?)\*\*/g, '<strong style="color:#aaa">$1</strong>');
+
+      var isOpportunity = title.toUpperCase().includes('OPORTUNIDAD');
+      var clusterColor  = isOpportunity ? '#a0a0a0' : (colors[i % colors.length]);
+
+      var card = document.createElement('div');
+      card.className = 'sp-cluster-card';
+      card.style.borderLeftColor = clusterColor;
+      card.innerHTML =
+        '<div class="sp-cluster-num">' + (isOpportunity ? '★ INSIGHT FINAL' : 'CLUSTER ' + (i + 1)) + '</div>' +
+        '<div class="sp-cluster-name" style="color:' + clusterColor + '">' + title.replace(/^CLUSTER\s+\d+:\s*/i,'') + '</div>' +
+        '<div class="sp-cluster-body">' + body_text + '</div>';
+
+      body.appendChild(card);
+    });
+  } else {
+    // Fallback: texto crudo con formato monospace
+    var raw = document.createElement('div');
+    raw.className = 'sp-ai-raw';
+    raw.textContent = text;
+    body.appendChild(raw);
+  }
+
+  document.getElementById('aiResult').classList.add('active');
+  document.getElementById('aiRunBtn').disabled = false;
+}
+
+// Copiar resultado al portapapeles
+function copyAiResult() {
+  if (!lastAiRawText) return;
+  navigator.clipboard.writeText(lastAiRawText).then(function() {
+    var btn = document.querySelector('.sp-ai-copy-btn');
+    btn.textContent = '✓ Copiado';
+    setTimeout(function(){ btn.textContent = '⎘ Copiar'; }, 2000);
+  });
+}
+
+// Override de switchSpTab para inicializar la tab IA cuando se abre
+var _origSwitchSpTab = null;
+function switchSpTab(tab, btn) {
+  document.querySelectorAll('.sp-tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.sp-tab-content').forEach(function(c){ c.style.display='none'; });
+  btn.classList.add('active');
+  document.getElementById('spTab-'+tab).style.display = (tab==='tabla') ? 'flex' : 'block';
+  if (tab === 'ia') initIaTab();
+}
+</script>
+</body>
+</html>
